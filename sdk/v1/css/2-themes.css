@@ -1,0 +1,46 @@
+/*
+ * Color tokens based on IBM Carbon Design System
+ * ==============================================
+ *
+ * Light mode uses gray10 values, dark mode uses gray90 values
+ * Reference: https://carbondesignsystem.com/elements/color/tokens/
+ * Note: No interactive tokens included as we are rendering static images only
+ */
+
+[data-theme="light"] {
+    --background: #f4f4f4;
+    --layer-01: #ffffff;
+    --layer-02: #f4f4f4;
+
+    --text-primary: #161616;
+    --text-secondary: #525252;
+
+    --border-subtle: #e0e0e0;
+    --border-strong: #8d8d8d;
+
+    --link: #0f62fe;
+
+    --support-success: #24a148;
+    --support-success-inverse: #42be65;
+    --support-error: #da1e28;
+    --support-error-inverse: #fa4d56;
+}
+
+[data-theme="dark"] {
+    --background: #000000;
+    --layer-01: #393939;
+    --layer-02: #525252;
+
+    --text-primary: #f4f4f4;
+    --text-secondary: #c6c6c6;
+
+    --border-subtle: #525252;
+    --border-strong: #8d8d8d;
+
+    --link: #78a9ff;
+
+    --support-success: #42be65;
+    --support-success-inverse: #24a148;
+    --support-error: #fa4d56;
+    --support-error-inverse: #da1e28;
+}

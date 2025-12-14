@@ -1,0 +1,16 @@
+[rabbitmq]
+url = "amqp://guest:guest@rabbitmq:5672/%2f"
+job_queue = "render-jobs"
+
+[metrics]
+bind_addr = "0.0.0.0:9101"
+
+[render.chrome_pool]
+worker_count = 4
+max_renders_per_browser = 20
+chrome_bin = "/usr/local/bin/chrome-headless-shell"
+proxy_server = "http://http-caching-proxy:9080"
+
+[render.screenshot]
+format = "png"
+png_lossless_optimize = true

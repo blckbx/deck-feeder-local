@@ -1,0 +1,29 @@
+[http]
+bind_addr = "0.0.0.0:8080"
+
+[internal_http]
+bind_addr = "0.0.0.0:9180"
+
+[catalog]
+refresh_interval_ms = 60000
+exclude_widgets = []
+
+[catalog.database]
+host = "postgres"
+port = 5432
+username = "deck_feeder"
+password = "deck_feeder"
+db_name = "deck_feeder"
+migrations_dir = "/app/migrations"
+
+[rabbitmq]
+url = "amqp://guest:guest@rabbitmq:5672/%2f"
+render_queue = "render-jobs"
+
+[redis]
+url = "redis://redis:6379/0"
+prefix = "deck-feeder"
+
+[render]
+signature = "worker_png_v1"
+output_mime = "image/png"

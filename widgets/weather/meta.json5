@@ -1,0 +1,29 @@
+{
+    $schema: '../../sdk/v1/schema.json',
+
+    ttl: 300,
+    sizes: ['full', 'large', 'medium', 'small'],
+
+    name: 'Weather',
+    description: 'Show local weather conditions with your choice of display style.',
+    assets: {
+        icon: 'static/icon.svg',
+        previews: {
+            full: 'static/full.png',
+            large: 'static/large.png',
+            medium: 'static/medium.png',
+            small_left: 'static/small_left.png',
+            small_right: 'static/small_right.png',
+        },
+    },
+
+    prefs: ['theme', 'numberFormat', 'dateFormat', 'timeFormat', 'timezone', 'temperatureUnit'],
+    params: {
+        location: {
+            name: 'Location',
+            description: 'City name for weather forecast',
+            type: 'string',
+            default: 'Prague',
+        },
+    },
+}

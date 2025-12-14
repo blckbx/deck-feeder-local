@@ -1,0 +1,102 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: deck-feeder-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: deck-feeder-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:16
+    container_name: deck-feeder-postgres
+    environment:
+      POSTGRES_DB: deck_feeder
+      POSTGRES_USER: deck_feeder
+      POSTGRES_PASSWORD: deck_feeder
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deck_feeder -d deck_feeder"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: ghcr.io/braiinsforge/deck-feeder-api:latest
+    container_name: deck-feeder-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    command: ["/usr/local/bin/deck-feeder-api", "--config", "/app/config/api.docker.toml"]
+    volumes:
+      - ./config/api.docker.toml:/app/config/api.docker.toml:ro
+      - ./widgets:/widgets:ro
+      - ./sdk:/sdk:ro
+    ports:
+      - "8080:8080"
+      - "9180:9180"
+
+  worker:
+    image: ghcr.io/braiinsforge/deck-feeder-worker:latest
+    container_name: deck-feeder-worker
+    depends_on:
+      api:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    command: ["/usr/local/bin/deck-feeder-worker", "--config", "/app/config/worker.docker.toml"]
+    volumes:
+      - ./config/worker.docker.toml:/app/config/worker.docker.toml:ro
+    ports:
+      - "9101:9101"
+
+  http-caching-proxy:
+    image: ghcr.io/braiinsforge/deck-feeder-http-caching-proxy:latest
+    container_name: deck-feeder-http-caching-proxy
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      PROXY_LISTEN_HOST: 0.0.0.0
+      PROXY_LISTEN_PORT: 9080
+      CACHE_TTL_SECONDS: 60
+      CACHE_MAX_BODY_BYTES: 5242880
+      LOCK_TTL_MS: 15000
+      LOCK_WAIT_MS: 15000
+      CACHE_PREFIX: httpcache
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "9080:9080"
+
+volumes:
+  rabbitmq-data:
+  postgres-data:
