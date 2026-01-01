@@ -1,0 +1,29 @@
+{
+    $schema: '../../sdk/v1/schema.json',
+
+    ttl: 300,
+    sizes: ['full', 'large', 'medium', 'small'],
+
+    name: 'BitcoinStats',
+    description: 'Show local Bitcoin stats from BTC-RPC-Explorer API.',
+    assets: {
+        icon: 'static/icon.svg',
+        previews: {
+            full: 'static/full.png',
+            large: 'static/large.png',
+            medium: 'static/medium.png',
+            small_left: 'static/small_left.png',
+            small_right: 'static/small_right.png',
+        },
+    },
+
+    prefs: ['theme', 'numberFormat', 'dateFormat', 'timeFormat', 'timezone'],
+    params: {
+        url: {
+            name: 'URL',
+            description: 'Local address of BTC-RPC-Explorer API (https://ip:port)',
+            type: 'string',
+            default: 'https://localhost:3002',
+        },
+    },
+}
