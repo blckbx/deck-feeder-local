@@ -1,3 +1,7 @@
+// SDK IIFE - only exposes the sdk() function globally
+(() => {
+const timeStart = performance.now();
+
 //
 // Constants
 //
@@ -58,17 +62,23 @@ const DATE_FORMAT = {
 const TEMPERATURE_UNIT = {
     /**
      * @param {number} value
+     * @param {boolean} withUnit
      * @returns {string}
      */
-    TEMPERATURE_UNIT_CELSIUS(value) {
-        return `${Math.round(value)}°C`;
+    TEMPERATURE_UNIT_CELSIUS(value, withUnit = true) {
+        let res = `${Math.round(value)}°`;
+        if (withUnit) res += 'C';
+        return res;
     },
     /**
      * @param {number} value
+     * @param {boolean} withUnit
      * @returns {string}
      */
-    TEMPERATURE_UNIT_FAHRENHEIT(value) {
-        return `${Math.round(value)}°F`;
+    TEMPERATURE_UNIT_FAHRENHEIT(value, withUnit = true) {
+        let res = `${Math.round(value)}°`;
+        if (withUnit) res += 'F';
+        return res;
     },
 };
 /**
@@ -860,19 +870,20 @@ const format = {
      *
      * @param {number} value
      * @param {'C' | 'F'} inputUnit
+     * @param {boolean} withUnit - Include unit letter (C/F) after degree symbol
      * @returns {string}
      */
-    temperature(value, inputUnit) {
+    temperature(value, inputUnit, withUnit = true) {
         const unit = params.temperatureUnit;
 
         if (unit === 'TEMPERATURE_UNIT_CELSIUS') {
-            if (inputUnit === 'C') return TEMPERATURE_UNIT.TEMPERATURE_UNIT_CELSIUS(value);
-            return TEMPERATURE_UNIT.TEMPERATURE_UNIT_CELSIUS(((value - 32) * 5) / 9);
+            if (inputUnit === 'C') return TEMPERATURE_UNIT.TEMPERATURE_UNIT_CELSIUS(value, withUnit);
+            return TEMPERATURE_UNIT.TEMPERATURE_UNIT_CELSIUS(((value - 32) * 5) / 9, withUnit);
         }
 
         if (unit === 'TEMPERATURE_UNIT_FAHRENHEIT') {
-            if (inputUnit === 'F') return TEMPERATURE_UNIT.TEMPERATURE_UNIT_FAHRENHEIT(value);
-            return TEMPERATURE_UNIT.TEMPERATURE_UNIT_FAHRENHEIT((value * 9) / 5 + 32);
+            if (inputUnit === 'F') return TEMPERATURE_UNIT.TEMPERATURE_UNIT_FAHRENHEIT(value, withUnit);
+            return TEMPERATURE_UNIT.TEMPERATURE_UNIT_FAHRENHEIT((value * 9) / 5 + 32, withUnit);
         }
     },
 };
@@ -1046,28 +1057,30 @@ const overlay = {
 
         // Create overlay elements if they don't exist
         if (!overlayEl) {
-            const iconEl = create.element('div', { id: 'error-icon', textContent: '⚠️' });
-            iconEl.style.cssText = 'font-size: 3rem; opacity: 0.8;';
+            const iconEl = create.svg('svg', { viewBox: '0 0 24 24', width: '48', height: '48' }, [
+                create.svg('path', {
+                    d: 'M12 2L2 22h20L12 2zm0 4l7.5 14h-15L12 6zm-1 5v4h2v-4h-2zm0 6v2h2v-2h-2z',
+                    fill: 'var(--text-secondary)',
+                }),
+            ]);
+            iconEl.style.cssText = 'opacity: 0.6;';
 
-            messageEl = create.element('div', { id: 'error-message', textContent: 'Error loading data' });
+            messageEl = create.element('div', { id: 'error-message' });
             messageEl.style.cssText = `
-                font-size: 1.2rem; 
-                line-height: 1.1;
-                font-weight: 300;
-                color: var(--support-error); 
+                font-size: 1.1rem;
+                line-height: 1.3;
+                font-weight: 400;
+                color: var(--text-secondary);
                 font-family: "Braiins Sans", sans-serif;
                 max-width: 80%;
-                word-wrap: break-word;
             `;
 
             const contentEl = create.element('div', { id: 'error-content' }, [iconEl, messageEl]);
             contentEl.style.cssText = `
-                position: relative;
-                width: 100%; 
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 1rem;
+                gap: 0.75rem;
                 padding: 2rem;
                 text-align: center;
             `;
@@ -1146,6 +1159,9 @@ function ready() {
     if (readyCalled) return;
     readyCalled = true;
 
+    const timeToFirstReady = performance.now() - timeStart;
+    log.info(`Time to first ready: ${timeToFirstReady.toFixed(2)}ms`);
+
     const marker = document.createElement('div');
     marker.id = 'widget-ready';
     marker.style.display = 'none';
@@ -1162,6 +1178,66 @@ function ready() {
         }
     }
 }
+
+/**
+ * @typedef {object} Logger
+ * @property {(...data: any[]) => void} trace
+ * @property {(...data: any[]) => void} debug
+ * @property {(...data: any[]) => void} info
+ * @property {(...data: any[]) => void} warn
+ * @property {(...data: any[]) => void} error
+ */
+
+/**
+ * Send a structured log message to the render worker (if supported).
+ * Falls back to console logging in local previews.
+ *
+ * @param {'trace'|'debug'|'info'|'warn'|'error'} severity
+ * @param {any} data
+ * @returns {void}
+ */
+function $log(severity, data) {
+    /** @type {{ severity: string, data: any }} */
+    const payload = { severity: String(severity || 'info').toLowerCase(), data };
+
+    const fn = window.deckFeederLog;
+    if (typeof fn === 'function') {
+        try {
+            return fn(JSON.stringify(payload));
+        } catch (error) {
+            console.group('Failed to "deckFeederLog"');
+            console.error(error);
+            console.log(payload);
+            console.groupEnd();
+        }
+    } else {
+        (console[payload.severity] || console.log)('[widget/sdk/log]', payload.data);
+    }
+}
+
+/** @type {Logger & { getLoggerWithContext(widgetName: string): Logger }} */
+const log = {
+    trace: (...args) => $log('trace', args),
+    debug: (...args) => $log('debug', args),
+    info: (...args) => $log('info', args),
+    warn: (...args) => $log('warn', args),
+    error: (...args) => $log('error', args),
+
+    /**
+     * @param {string} widgetName
+     * @returns {Logger}
+     */
+    getLoggerWithContext(widgetName) {
+        const context = { widgetName };
+        return {
+            trace: (...data) => $log('trace', { context, data }),
+            debug: (...data) => $log('debug', { context, data }),
+            info: (...data) => $log('info', { context, data }),
+            warn: (...data) => $log('warn', { context, data }),
+            error: (...data) => $log('error', { context, data }),
+        };
+    },
+};
 
 /**
  * Show a timeout error overlay
@@ -1292,9 +1368,14 @@ function sdk() {
         css,
         net,
         overlay,
+        log,
         ready,
         view,
         charts,
         getSymbolIcon,
     };
 }
+
+// Expose sdk globally
+window.sdk = sdk;
+})();
