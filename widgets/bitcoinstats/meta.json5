@@ -23,7 +23,7 @@
             name: 'URL',
             description: 'Local address of BTC-RPC-Explorer API (http://ip:port)',
             type: 'string',
-            default: 'http://localhost:3002',
+            default: 'http://host.docker.internal:3002',
         },
     },
 }

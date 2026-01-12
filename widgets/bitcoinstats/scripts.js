@@ -178,7 +178,7 @@ async function main() {
 
     try {
         // Template URL for btc-rpc-explorer API
-        const url = params.getAny('url', 'http://localhost:3002');
+        const url = params.getAny('url', 'http://host.docker.internal:3002');
 
         const response = await net.fetch(`${url}/api/blocks/tip`);
         if (!response.ok) {
