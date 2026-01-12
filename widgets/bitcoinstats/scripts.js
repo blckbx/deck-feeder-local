@@ -1,8 +1,5 @@
 /// <reference path="../../sdk/v1/scripts.js" />
 
-import https from 'https';
-require('dotenv').config();
-
 async function getData({ url }) {
     let blockheight = 0;
     let min_fees = "0";
@@ -181,17 +178,13 @@ async function main() {
 
     try {
         // Template URL for btc-rpc-explorer API
-        // Read from .env file
-        const ip = process.env.IP || 'localhost';
-        const port = process.env.PORT || '3002';
-        const url = params.getAny('url', `https://${ip}:${port}`);
+        const url = params.getAny('url', 'http://localhost:3002');
 
-        // Self-signed certificate internal network
-        const httpsAgent = new https.Agent({
-            rejectUnauthorized: false,
-        });
-
-        const res = await net.fetch(`${url}/api/blocks/tip`, { agent: httpsAgent }).then(r => r.json());
+        const response = await net.fetch(`${url}/api/blocks/tip`);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status} from ${url}`);
+        }
+        const res = await response.json();
         let blockheight = 0;
         blockheight = res.height;
      
