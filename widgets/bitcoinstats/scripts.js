@@ -1,176 +1,89 @@
 /// <reference path="../../sdk/v1/scripts.js" />
 
-async function getData({ url }) {
-    let blockheight = 0;
-    let min_fees = "0";
-    let med_fees = "0";
-    let max_fees = 0;
-    let satsperdollar = 0;
-    let usdprice = 0;
-    let satspereur = 0;
-    let eurprice = 0;
-    let halving = 0;
-    let txcount = 0;
-    let hashrate = "0";
-    let mempool_max = 0;
-    let mempool_usage = 0;
-    let supply = "0";
-    let connections = 0;
-    let connections_in = 0;
-    let connections_out = 0;
-    let version = "0";
-    let bytesrecv = 0;
-    let bytessent = 0;
-
-    let msg1 = `${url}/api/blocks/tip`;
-    let msg2 = `${url}/api/mempool/fees`;
-    let msg3 = `${url}/api/mempool/summary`;
-    let msg4 = `${url}/api/blockchain/next-halving`;
-    let msg5 = `${url}/api/mining/hashrate`;
-    let msg6 = `${url}/api/blockchain/coins`;
-    let msg7 = `${url}/api/mining/next-block`;
-    let msg8 = `${url}/api/networkinfo`;
-    let msg9 = `${url}/api/getnettotals`;
-
-    /*
-    const response1 = await net.fetch(msg1, { agent: httpsAgent });
-
-    if (response1.ok) {
-        let res = await response1.json();
-        blockheight = res.height;
-    }
-
-    const response2 = await net.fetch(msg2, { agent: httpsAgent });
-
-    if (response2.ok) {
-        let res = await response2.json();
-        min_fees = res.nextBlock.min;
-        med_fees = res.nextBlock.median;
-        max_fees = res.nextBlock.max;
-    }
-    */
-
-    /*
-    if (msg2.status_code == 200) {
-        var parser = new Json.Parser ();
-        parser.load_from_data (msg2.response_body.data, -1);
-
-        var root_object = parser.get_root ().get_object ();
-        var next_block = root_object.get_object_member ("nextBlock");
-        min_fees = next_block.get_int_member ("min");
-        max_fees = next_block.get_int_member ("max");
-        med_fees = (int) next_block.get_int_member ("median");
-    }
-    */
-
-    //session_internal.send_message(msg3);
-
-    /*
-    if (msg3.status_code == 200) {
-        var parser = new Json.Parser ();
-        parser.load_from_data (msg3.response_body.data, -1);
-
-        var root_object = parser.get_root ().get_object ();
-        txcount = root_object.get_int_member ("size");
-        mempool_max = root_object.get_int_member ("maxmempool") / 1000000;
-        mempool_usage = root_object.get_int_member ("usage") / 1000000;
-    }
-    */                
-
-    //session_internal.send_message(msg4);
-
-    /*
-    if (msg4.status_code == 200) {
-        var parser = new Json.Parser ();
-        parser.load_from_data (msg4.response_body.data, -1);
-        var root_object = parser.get_root ().get_object ();
-        halving = root_object.get_int_member("blocksUntilNextHalving");
-    }
-
-    /*
-    session_internal.send_message(msg5);
-
-    if (msg5.status_code == 200) {
-        var parser = new Json.Parser ();
-        parser.load_from_data((string)msg5.response_body.data, -1);
-        var root_object = parser.get_root ().get_object ();
-        var week = root_object.get_object_member ("7Day");
-        double value = week.get_double_member ("val");
-        GLib.Intl.setlocale(GLib.LocaleCategory.ALL, "us_US.UTF-8");
-        string unitAbb = (string) week.get_string_member ("unitAbbreviation");
-        hashrate = "%'0.2f".printf(value) + " " + unitAbb;
-    }
-
-                
-    session_internal.send_message(msg6);
-
-    if (msg6.status_code == 200) {
-        var parser = new Json.Parser ();
-        parser.load_from_data ((string)msg6.response_body.data, -1);
-        var root_object = parser.get_root ().get_object ();
-        double tmp = double.parse(root_object.get_string_member ("supply"));
-        GLib.Intl.setlocale(GLib.LocaleCategory.ALL, "us_US.UTF-8");
-        supply = "%'0.2f".printf(tmp);
-    }
-    */
-
-    //session_internal.send_message(msg7);
-
-    /*
-    if (msg7.status_code == 200) {
-        var parser = new Json.Parser ();
-        parser.load_from_data (msg7.response_body.data, -1);
-        var root_object = parser.get_root ().get_object ();
-        minFeeRate = root_object.get_double_member ("minFeeRate");
-        medFeeRate = root_object.get_double_member ("medianFeeRate");
-        GLib.Intl.setlocale(GLib.LocaleCategory.ALL, "us_US.UTF-8");
-        min_fees = "%'0.2f".printf(minFeeRate);
-        med_fees = "%'0.2f".printf(medFeeRate);
-    }
-
-    //session_internal.send_message(msg8);
-
-    if (msg8.status_code == 200) {
-        var parser = new Json.Parser ();
-        parser.load_from_data (msg8.response_body.data, -1);
-        var root_object = parser.get_root ().get_object ();                    
-        connections = root_object.get_int_member ("connections");
-        connections_out = root_object.get_int_member ("connections_out");
-        connections_in = root_object.get_int_member ("connections_in");
-        tmp_version = (root_object.get_int_member ("version")).to_string();
-        major = tmp_version.substring(0, 2);
-        minor = tmp_version.substring(3, 1);
-        rc = tmp_version.substring(5, 1);
-        if (rc != "0") {
-            version = "%s.%s-rc%s".printf(major, minor, rc);
-        } else {
-            version = "%s.%s".printf(major, minor);
-        }
-    }
-
-    //session_internal.send_message(msg9);
-
-    if (msg9.status_code == 200) {
-        var parser = new Json.Parser ();
-        parser.load_from_data (msg9.response_body.data, -1);
-        var root_object = parser.get_root ().get_object ();                    
-        bytesrecv = root_object.get_int_member ("totalbytesrecv") / 1000000;
-        bytessent = root_object.get_int_member ("totalbytessent") / 1000000;
-     }
-        
-     */
-
-     //session_internal.abort();
-
-    let results = [blockheight];
-    return results;
+function normalizeBaseUrl(url) {
+    return url.endsWith('/') ? url.slice(0, -1) : url;
 }
 
-class WidgetInputError extends Error {
-    constructor(message) {
-        super(message);
-        this.name = 'WidgetInputError';
+async function fetchJson(net, url, timeoutMs = 5000) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        const response = await net.fetch(url, { signal: controller.signal });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status} from ${url}`);
+        }
+        return await response.json();
+    } finally {
+        clearTimeout(timeoutId);
     }
+}
+
+async function getData({ net, url }) {
+    const msg1 = `${url}/api/blocks/tip`;
+    const msg2 = `${url}/api/mempool/fees`;
+    const msg3 = `${url}/api/mempool/summary`;
+    const msg4 = `${url}/api/blockchain/next-halving`;
+    const msg8 = `${url}/api/networkinfo`;
+    const msg9 = `${url}/api/getnettotals`;
+
+    const results = await Promise.allSettled([
+        fetchJson(net, msg1),
+        fetchJson(net, msg2),
+        fetchJson(net, msg3),
+        fetchJson(net, msg4),
+        fetchJson(net, msg8),
+        fetchJson(net, msg9),
+    ]);
+
+    const tipRes = results[0].status === 'fulfilled' ? results[0].value : null;
+    const feesRes = results[1].status === 'fulfilled' ? results[1].value : null;
+    const mempoolRes = results[2].status === 'fulfilled' ? results[2].value : null;
+    const halvingRes = results[3].status === 'fulfilled' ? results[3].value : null;
+    const netInfoRes = results[4].status === 'fulfilled' ? results[4].value : null;
+    const totalsRes = results[5].status === 'fulfilled' ? results[5].value : null;
+
+    const blockheight = typeof tipRes?.height === 'number' ? tipRes.height : 0;
+    const nextBlock = feesRes?.nextBlock || {};
+    const min_fees = nextBlock.min ?? "0";
+    const med_fees = nextBlock.median ?? "0";
+    const max_fees = nextBlock.max ?? 0;
+
+    const mempool_max = mempoolRes?.maxmempool ?? mempoolRes?.maxMempool ?? mempoolRes?.maxMemPool ?? 0;
+    const mempool_usage = mempoolRes?.usage ?? 0;
+    const txcount = mempoolRes?.size ?? 0;
+    const halving = halvingRes?.blocksUntilNextHalving ?? 0;
+
+    const connections = netInfoRes?.connections ?? 0;
+    const connections_out = netInfoRes?.connections_out ?? 0;
+    const connections_in = netInfoRes?.connections_in ?? 0;
+    let version = '0';
+    if (netInfoRes?.version != null) {
+        const tmp_version = String(netInfoRes.version);
+        const major = tmp_version.substring(0, 2);
+        const minor = tmp_version.substring(3, 1);
+        const rc = tmp_version.substring(5, 1);
+        version = rc !== '0' && rc !== '' ? `${major}.${minor}-rc${rc}` : `${major}.${minor}`;
+    }
+
+    const bytesrecv = totalsRes?.totalbytesrecv ? totalsRes.totalbytesrecv / 1000000 : 0;
+    const bytessent = totalsRes?.totalbytessent ? totalsRes.totalbytessent / 1000000 : 0;
+
+    return {
+        blockheight,
+        min_fees,
+        med_fees,
+        max_fees,
+        mempool_max,
+        mempool_usage,
+        txcount,
+        halving,
+        connections,
+        connections_out,
+        connections_in,
+        version,
+        bytesrecv,
+        bytessent,
+    };
 }
 
 async function main() {
@@ -178,15 +91,26 @@ async function main() {
 
     try {
         // Template URL for btc-rpc-explorer API
-        const url = params.getAny('url', 'http://host.docker.internal:3002');
+        const rawUrl = params.getAny('url', 'http://host.docker.internal:3002');
+        const url = normalizeBaseUrl(rawUrl);
+        const {
+            blockheight,
+            min_fees,
+            med_fees,
+            max_fees,
+            mempool_max,
+            mempool_usage,
+            txcount,
+            halving,
+            connections,
+            connections_out,
+            connections_in,
+            version,
+            bytesrecv,
+            bytessent,
+        } = await getData({ net, url });
 
-        const response = await net.fetch(`${url}/api/blocks/tip`);
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status} from ${url}`);
-        }
-        const res = await response.json();
-        let blockheight = 0;
-        if (res) blockheight = res.height;
+        let fees = `${min_fees} / ${med_fees} / ${max_fees}`;
      
         const container = select.id('container');
         const size = params.size;
@@ -200,7 +124,7 @@ async function main() {
             container.appendChild(
                 create.element('div', { className: 'temp', textContent: blockheight })
             );
-            container.appendChild(create.element('div', { className: 'desc', textContent: 'hello' }));
+            container.appendChild(create.element('div', { className: 'desc', textContent: fees }));
         }
 
         //
@@ -213,6 +137,28 @@ async function main() {
         // Large
         //
         else if (size === view.BREAKPOINTS.large.name) {
+            const rows = [
+                ['Block height', blockheight],
+                ['Fees (min/med/max)', `${min_fees} / ${med_fees} / ${max_fees}`],
+                ['Mempool tx', txcount],
+                ['Mempool usage', mempool_usage],
+                ['Mempool max', mempool_max],
+                ['Halving (blocks)', halving],
+                ['Connections (in/out)', `${connections_in} / ${connections_out}`],
+                ['Connections (total)', connections],
+                ['Version', version],
+                ['Bytes recv (MB)', bytesrecv.toFixed(2)],
+                ['Bytes sent (MB)', bytessent.toFixed(2)],
+            ];
+
+            for (const [label, value] of rows) {
+                container.appendChild(
+                    create.element('div', { className: 'row' },
+                        create.element('span', { className: 'label', textContent: label }),
+                        create.element('span', { className: 'value', textContent: String(value) }),
+                    )
+                );
+            }
         }
 
         //
@@ -229,12 +175,8 @@ async function main() {
             container.style.fontSize = '24px';
         }
     } catch (error) {
-        if (error instanceof WidgetInputError) {
-            overlay.showError(error.message);
-        } else {
-            console.error('Error fetching bitcoin data:', error);
-            overlay.showError(error.message || 'Unexpected error while loading bitcoin data.');
-        }
+        console.error('Error fetching bitcoin data:', error);
+        overlay.showError(error.message || 'Unexpected error while loading bitcoin data.');
     } finally {
         ready();
     }
