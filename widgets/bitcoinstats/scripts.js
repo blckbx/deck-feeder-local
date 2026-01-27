@@ -137,28 +137,38 @@ async function main() {
         // Large
         //
         else if (size === view.BREAKPOINTS.large.name) {
-            const rows = [
-                ['Block height', blockheight],
-                ['Fees (min/med/max)', `${min_fees} / ${med_fees} / ${max_fees}`],
+            const today = create.element('div', { className: 'today' });
+            const left = create.element('div', { className: 'left' });
+            const right = create.element('div', { className: 'right' });
+
+            left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin' }));
+            left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
+            left.appendChild(create.element('div', { className: 'desc-large', textContent: fees }));
+
+            const stats = [
                 ['Mempool tx', txcount],
-                ['Mempool usage', mempool_usage],
-                ['Mempool max', mempool_max],
+                ['Mempool usage (MB)', (mempool_usage / 1000000).toFixed(2)],
+                ['Mempool max (MB)', (mempool_max / 1000000).toFixed(2)],
                 ['Halving (blocks)', halving],
+                ['Connections', connections],
                 ['Connections (in/out)', `${connections_in} / ${connections_out}`],
-                ['Connections (total)', connections],
-                ['Version', version],
+                ['Node version', version],
                 ['Bytes recv (MB)', bytesrecv.toFixed(2)],
                 ['Bytes sent (MB)', bytessent.toFixed(2)],
             ];
 
-            for (const [label, value] of rows) {
-                container.appendChild(
-                    create.element('div', { className: 'row' },
-                        create.element('span', { className: 'label', textContent: label }),
-                        create.element('span', { className: 'value', textContent: String(value) }),
-                    )
-                );
+            for (const [label, value] of stats) {
+                const statItem = create.element('div', { className: 'stat-item' });
+                const statHeader = create.element('div', { className: 'stat-header' });
+                statHeader.appendChild(create.element('span', { className: 'stat-label', textContent: label }));
+                statItem.appendChild(statHeader);
+                statItem.appendChild(create.element('div', { className: 'stat-value', textContent: String(value) }));
+                right.appendChild(statItem);
             }
+
+            today.appendChild(left);
+            today.appendChild(right);
+            container.appendChild(today);
         }
 
         //
