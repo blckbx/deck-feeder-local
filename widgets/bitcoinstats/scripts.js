@@ -123,7 +123,7 @@ async function main() {
             container.appendChild(
                 create.element('div', { className: 'temp', textContent: blockheight })
             );
-            container.appendChild(create.element('div', { className: 'desc', textContent: fees }));
+            container.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees} / ${med_fees} / ${max_fees} sat/vB` }));
         }
 
         //
@@ -137,11 +137,11 @@ async function main() {
         //
         else if (size === view.BREAKPOINTS.large.name) {
 
-            const today = create.element('div', { className: 'today' });
+            const headline = create.element('div', { className: 'today' });
             const left = create.element('div', { className: 'left' });
             const right = create.element('div', { className: 'right' });
 
-            left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Node' }));
+            left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Version' }));
             left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
             left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees: ${min_fees} / ${med_fees} / ${max_fees} sat/vB`}));
 
@@ -159,9 +159,9 @@ async function main() {
                 right.appendChild(statItem);
             }
 
-            today.appendChild(left);
-            today.appendChild(right);
-            container.appendChild(today);
+            headline.appendChild(left);
+            headline.appendChild(right);
+            container.appendChild(headline);
 
             const mempoolUsageMb = mempool_usage / 1000000;
             const mempoolMaxMb = mempool_max / 1000000;
