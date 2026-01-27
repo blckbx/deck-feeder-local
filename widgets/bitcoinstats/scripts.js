@@ -23,6 +23,7 @@ async function getData({ net, url }) {
     const msg2 = `${url}/api/mempool/fees`;
     const msg3 = `${url}/api/mempool/summary`;
     const msg4 = `${url}/api/blockchain/next-halving`;
+    const msg5 = `${url}/api/mining/next-block`;
     const msg8 = `${url}/api/networkinfo`;
     const msg9 = `${url}/api/getnettotals`;
 
@@ -31,6 +32,7 @@ async function getData({ net, url }) {
         fetchJson(net, msg2),
         fetchJson(net, msg3),
         fetchJson(net, msg4),
+        fetchJson(net, msg5),
         fetchJson(net, msg8),
         fetchJson(net, msg9),
     ]);
@@ -39,14 +41,15 @@ async function getData({ net, url }) {
     const feesRes = results[1].status === 'fulfilled' ? results[1].value : null;
     const mempoolRes = results[2].status === 'fulfilled' ? results[2].value : null;
     const halvingRes = results[3].status === 'fulfilled' ? results[3].value : null;
-    const netInfoRes = results[4].status === 'fulfilled' ? results[4].value : null;
-    const totalsRes = results[5].status === 'fulfilled' ? results[5].value : null;
+    const nextBlockRes = results[4].status === 'fulfilled' ? results[4].value : null;
+    const netInfoRes = results[5].status === 'fulfilled' ? results[5].value : null;
+    const totalsRes = results[6].status === 'fulfilled' ? results[6].value : null;
 
     const blockheight = typeof tipRes?.height === 'number' ? tipRes.height : 0;
-    const nextBlock = feesRes?.nextBlock || {};
-    const min_fees = Number.isFinite(nextBlock.min) ? nextBlock.min : 0;
-    const med_fees = Number.isFinite(nextBlock.median) ? nextBlock.median : 0;
-    const max_fees = Number.isFinite(nextBlock.max) ? nextBlock.max : 0;
+    const nextBlock = nextBlockRes || {};
+    const min_fees = Number.isFinite(Number(nextBlock.minFeeRate)) ? Number(nextBlock.minFeeRate) : 0;
+    const med_fees = Number.isFinite(Number(nextBlock.medianFeeRate)) ? Number(nextBlock.medianFeeRate) : 0;
+    const max_fees = Number.isFinite(Number(nextBlock.maxFeeRate)) ? Number(nextBlock.maxFeeRate) : 0;
 
     const mempool_max = mempoolRes?.maxmempool ?? mempoolRes?.maxMempool ?? mempoolRes?.maxMemPool ?? 0;
     const mempool_usage = mempoolRes?.usage ?? 0;
@@ -122,9 +125,8 @@ async function main() {
         if (size === view.BREAKPOINTS.small.name) {
             container.appendChild(create.element('div', { className: 'temp', textContent: blockheight }));
             container.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees} s/vB` }));
-            container.appendChild(create.element('div', { className: 'desc', textContent: `Mempool: ${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)} MB` }));
+            container.appendChild(create.element('div', { className: 'desc', textContent: `Mempool: ${mempool_usage.toFixed(0)} / ${mempool_max.toFixed(0)} MB` }));
             container.appendChild(create.element('div', { className: 'desc', textContent: `Traffic: ${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)} MB` }));            
-
         }
 
         //
@@ -142,12 +144,12 @@ async function main() {
             const left = create.element('div', { className: 'left' });
             const right = create.element('div', { className: 'right' });
 
-            left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Version' }));
+            left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Node' }));
             left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
             left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees} s/vB`}));
 
             const headlineStats = [
-                ['Bitcoin Core', version],
+                ['Bitcoin Version', version],
                 ['Next Halving', halving],
             ];
 
