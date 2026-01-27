@@ -104,3 +104,13 @@ services:
 volumes:
   rabbitmq-data:
   postgres-data:
+
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-deckfeeder
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+          gateway: 172.19.0.1
