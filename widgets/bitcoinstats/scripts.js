@@ -59,10 +59,10 @@ async function getData({ net, url }) {
     let version = '0.0';
     if (netInfoRes?.version != null) {
         const raw = String(netInfoRes.version).padStart(6, '0');
-        const major = raw.slice(0, 2);
-        const minor = raw.slice(2, 4);
-        const rc = raw.slice(4, 6);
-        version = rc !== '00' ? `${major}.${minor}-rc${rc}` : `${major}.${minor}`;
+        const major = String(parseInt(raw.slice(0, 2), 10));
+        const minor = String(parseInt(raw.slice(2, 4), 10));
+        const rcNum = parseInt(raw.slice(4, 6), 10);
+        version = rcNum ? `${major}.${minor}-rc${rcNum}` : `${major}.${minor}`;
     }
 
     const bytesrecv = totalsRes?.totalbytesrecv ? totalsRes.totalbytesrecv / 1000000 : 0;
@@ -110,8 +110,7 @@ async function main() {
             bytessent,
         } = await getData({ net, url });
 
-        let fees = `${min_fees} / ${med_fees} / ${max_fees}`;
-     
+    
         const container = select.id('container');
         const size = params.size;
         const theme = (params.theme || 'light').toLowerCase();
@@ -142,16 +141,12 @@ async function main() {
             const left = create.element('div', { className: 'left' });
             const right = create.element('div', { className: 'right' });
 
-            left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin' }));
-            left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
-            left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees: ${fees}` }));
+            left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Node' }));
+            left.appendChild(create.element('div', { className: 'temp-large', textContent: `⛓ ${blockheight}` }));
+            left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees (min/med/max): ${min_fees} / ${med_fees} / ${max_fees} sat/vB`}));
 
             const headlineStats = [
-                ['Bitcoin Core', version],
-                //['Mempool tx', txcount],
-                //['Mempool usage (MB)', (mempool_usage / 1000000).toFixed(2)],
-                //['Halving (blocks)', halving],
-                //['Connections', `${connections} / ${connections_in} (in) / ${connections_out} (out)`],
+                ['🖬 Bitcoin Core', version],
             ];
 
             for (const [label, value] of headlineStats) {
@@ -167,21 +162,31 @@ async function main() {
             today.appendChild(right);
             container.appendChild(today);
 
+            const mempoolUsageMb = mempool_usage / 1000000;
+            const mempoolMaxMb = mempool_max / 1000000;
+            const mempoolPercent = mempool_max > 0 ? Math.min(100, (mempool_usage / mempool_max) * 100) : 0;
+
             const rows = [
-                ['Connections (sum / in / out)', `${connections} / ${connections_in} / ${connections_out}`],
+                ['Connections (∑ / ↓ / ↑)', `${connections} / ${connections_in} / ${connections_out}`],
                 ['Mempool Tx Count', txcount],
-                ['Mempool Usage / Max (MB)', `${(mempool_usage / 1000000).toFixed(2)} / ${(mempool_max / 1000000).toFixed(2)}`],
-                ['Bytes recv (MB)', bytesrecv.toFixed(2)],
-                ['Bytes sent (MB)', bytessent.toFixed(2)],
+                ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(2)} / ${mempoolMaxMb.toFixed(2)}`, 'mempool-usage'],
+                ['Bytes recv / sent (MB)', `${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)}`],
             ];
 
             const forecast = create.element('div', { className: 'forecast' });
-            for (const [label, value] of rows) {
-                const item = create.element('div', { className: 'forecast-item' });
+            for (const [label, value, kind] of rows) {
+                const item = create.element('div', { className: `forecast-item${kind ? ` ${kind}` : ''}` });
                 const dayLabel = create.element('div', { className: 'day-label' });
                 dayLabel.appendChild(create.element('span', { className: 'day-name', textContent: label }));
                 const range = create.element('div', { className: 'temp-range' });
                 range.appendChild(create.element('span', { className: 'forecast-temp high', textContent: String(value) }));
+                if (kind === 'mempool-usage') {
+                    const bar = create.element('div', { className: 'usage-bar' });
+                    const fill = create.element('div', { className: 'usage-fill' });
+                    fill.style.width = `${mempoolPercent.toFixed(1)}%`;
+                    bar.appendChild(fill);
+                    range.appendChild(bar);
+                }
                 item.appendChild(dayLabel);
                 item.appendChild(range);
                 forecast.appendChild(item);
