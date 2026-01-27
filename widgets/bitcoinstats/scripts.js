@@ -130,7 +130,7 @@ async function main() {
             container.appendChild(create.element('div', { className: 'temp', textContent: blockheight }));
             container.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB` }));
             container.appendChild(create.element('div', { className: 'desc', textContent: `Mempool: ${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)} MB` }));
-            container.appendChild(create.element('div', { className: 'desc', textContent: `Traffic: ${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)} MB` }));            
+            container.appendChild(create.element('div', { className: 'desc', textContent: `Traffic: ↓ ${bytesrecv.toFixed(0)} | ↑ ${bytessent.toFixed(0)} MB` }));            
         }
 
         //
@@ -150,7 +150,7 @@ async function main() {
 
             left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Node' }));
             left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
-            left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`}));
+            left.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`}));
 
             const headlineStats = [
                 ['Bitcoin Version', version],
