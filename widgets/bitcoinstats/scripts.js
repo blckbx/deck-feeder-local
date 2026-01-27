@@ -120,10 +120,9 @@ async function main() {
         // Small
         //
         if (size === view.BREAKPOINTS.small.name) {
-            container.appendChild(
-                create.element('div', { className: 'temp', textContent: blockheight })
-            );
+            container.appendChild(create.element('div', { className: 'temp', textContent: blockheight }));
             container.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees} sat/vB` }));
+
         }
 
         //
@@ -144,6 +143,8 @@ async function main() {
             left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Version' }));
             left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
             left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees} sat/vB`}));
+            left.appendChild(create.element('div', { className: 'desc-large', textContent: `Mempool: ${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)} MB` }));
+            left.appendChild(create.element('div', { className: 'desc-large', textContent: `Traffic: ${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)} MB` }));
 
             const headlineStats = [
                 ['Bitcoin Core', version],
