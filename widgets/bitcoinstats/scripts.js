@@ -119,13 +119,17 @@ async function main() {
         const theme = (params.theme || 'light').toLowerCase();
         container.className = `${size} ${theme}`;
 
+        const mempoolUsageMb = mempool_usage / 1000000;
+        const mempoolMaxMb = mempool_max / 1000000;
+        const mempoolPercent = mempool_max > 0 ? Math.min(100, (mempool_usage / mempool_max) * 100) : 0;
+
         //
         // Small
         //
         if (size === view.BREAKPOINTS.small.name) {
             container.appendChild(create.element('div', { className: 'temp', textContent: blockheight }));
             container.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB` }));
-            container.appendChild(create.element('div', { className: 'desc', textContent: `Mempool: ${mempool_usage.toFixed(0)} / ${mempool_max.toFixed(0)} MB` }));
+            container.appendChild(create.element('div', { className: 'desc', textContent: `Mempool: ${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)} MB` }));
             container.appendChild(create.element('div', { className: 'desc', textContent: `Traffic: ${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)} MB` }));            
         }
 
@@ -165,10 +169,6 @@ async function main() {
             headline.appendChild(left);
             headline.appendChild(right);
             container.appendChild(headline);
-
-            const mempoolUsageMb = mempool_usage / 1000000;
-            const mempoolMaxMb = mempool_max / 1000000;
-            const mempoolPercent = mempool_max > 0 ? Math.min(100, (mempool_usage / mempool_max) * 100) : 0;
 
             const rows = [
                 ['Connections (∑ / ↓ / ↑)', `${connections} / ${connections_in} / ${connections_out}`],
