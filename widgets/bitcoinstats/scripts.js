@@ -44,9 +44,9 @@ async function getData({ net, url }) {
 
     const blockheight = typeof tipRes?.height === 'number' ? tipRes.height : 0;
     const nextBlock = feesRes?.nextBlock || {};
-    const min_fees = nextBlock.min ?? "0";
-    const med_fees = nextBlock.median ?? "0";
-    const max_fees = nextBlock.max ?? 0;
+    const min_fees = Number.isFinite(nextBlock.min) ? nextBlock.min : 0;
+    const med_fees = Number.isFinite(nextBlock.median) ? nextBlock.median : 0;
+    const max_fees = Number.isFinite(nextBlock.max) ? nextBlock.max : 0;
 
     const mempool_max = mempoolRes?.maxmempool ?? mempoolRes?.maxMempool ?? mempoolRes?.maxMemPool ?? 0;
     const mempool_usage = mempoolRes?.usage ?? 0;
@@ -123,7 +123,7 @@ async function main() {
             container.appendChild(
                 create.element('div', { className: 'temp', textContent: blockheight })
             );
-            container.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees} / ${med_fees} / ${max_fees} sat/vB` }));
+            container.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees} sat/vB` }));
         }
 
         //
@@ -143,7 +143,7 @@ async function main() {
 
             left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Version' }));
             left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
-            left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees: ${min_fees} / ${med_fees} / ${max_fees} sat/vB`}));
+            left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees} sat/vB`}));
 
             const headlineStats = [
                 ['Bitcoin Core', version],
