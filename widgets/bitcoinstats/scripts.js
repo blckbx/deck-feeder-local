@@ -147,6 +147,7 @@ async function main() {
 
             const headlineStats = [
                 ['Bitcoin Core', version],
+                ['Next Halving', halving],
             ];
 
             for (const [label, value] of headlineStats) {

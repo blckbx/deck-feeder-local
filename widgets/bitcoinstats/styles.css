@@ -191,7 +191,7 @@ body {
             .desc-large {
                 font-size: 1.5rem;
                 color: var(--text-secondary);
-                text-align: center;
+                text-align: left;
             }
         }
 
