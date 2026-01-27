@@ -186,11 +186,12 @@ async function main() {
         }
         const res = await response.json();
         let blockheight = 0;
-        blockheight = res.height;
+        if (res) blockheight = res.height;
      
         const container = select.id('container');
         const size = params.size;
-        container.className = `${size} ${params.theme.toLowerCase()}`;
+        const theme = (params.theme || 'light').toLowerCase();
+        container.className = `${size} ${theme}`;
 
         //
         // Small

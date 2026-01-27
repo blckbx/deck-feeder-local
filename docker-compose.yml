@@ -59,6 +59,8 @@ services:
       - ./config/api.docker.toml:/app/config/api.docker.toml:ro
       - ./widgets:/widgets:ro
       - ./sdk:/sdk:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "8080:8080"
       - "9180:9180"
@@ -76,6 +78,8 @@ services:
     command: ["/usr/local/bin/deck-feeder-worker", "--config", "/app/config/worker.docker.toml"]
     volumes:
       - ./config/worker.docker.toml:/app/config/worker.docker.toml:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "9101:9101"
 
