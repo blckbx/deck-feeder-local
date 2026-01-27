@@ -142,11 +142,11 @@ async function main() {
             const right = create.element('div', { className: 'right' });
 
             left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Node' }));
-            left.appendChild(create.element('div', { className: 'temp-large', textContent: `⛓ ${blockheight}` }));
-            left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees (min/med/max): ${min_fees} / ${med_fees} / ${max_fees} sat/vB`}));
+            left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
+            left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees: ${min_fees} / ${med_fees} / ${max_fees} sat/vB`}));
 
             const headlineStats = [
-                ['🖬 Bitcoin Core', version],
+                ['Bitcoin Core', version],
             ];
 
             for (const [label, value] of headlineStats) {
@@ -169,7 +169,7 @@ async function main() {
             const rows = [
                 ['Connections (∑ / ↓ / ↑)', `${connections} / ${connections_in} / ${connections_out}`],
                 ['Mempool Tx Count', txcount],
-                ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(2)} / ${mempoolMaxMb.toFixed(2)}`, 'mempool-usage'],
+                ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
                 ['Bytes recv / sent (MB)', `${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)}`],
             ];
 
