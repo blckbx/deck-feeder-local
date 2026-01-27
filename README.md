@@ -54,6 +54,31 @@ issues. One approach is to run nginx on a separate host port (e.g. 8081) and pro
 - `/` -> `http://127.0.0.1:8080/` (deck-feeder)
 - `/btc-rpc-explorer/` -> `http://127.0.0.1:3002/` (local service)
 
+```nginx
+        server {
+            listen 8081;
+            server_name _;
+
+            # deck-feeder (docker on host:8080)
+            location / {
+                proxy_pass http://127.0.0.1:8080/;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $remote_addr;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+
+            # btc-rpc-explorer
+            location /btc-rpc-explorer/ {
+                proxy_pass http://127.0.0.1:3002/;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $remote_addr;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+        }
+```
+
 Then set the widget URL to `http://<host-lan-ip>:8081/btc-rpc-explorer`.
 
 On Linux with UFW enabled, traffic from the Docker bridge to the host can be
