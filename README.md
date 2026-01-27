@@ -82,13 +82,11 @@ issues. One approach is to run nginx on a separate host port (e.g. 8081) and pro
 Then set the widget URL to `http://<host-lan-ip>:8081/btc-rpc-explorer`.
 
 On Linux with UFW enabled, traffic from the Docker bridge to the host can be
-blocked. You may need an explicit rule for the deck-feeder network bridge:
+blocked. You may need an explicit rule for the deck-feeder network bridge. 
+The deck-feeder network bridge is permanently set to `br-deckfeeder` in `docker-compose.yml`:
 
 ```bash
-# Find the bridge name for the compose network
-docker network inspect deck-feeder-local_default --format '{{.Id}}'
-# Use the first 12 chars of the Id -> br-<id>
-sudo ufw allow in on br-<id> to any port 8081 proto tcp
+sudo ufw allow in on br-deckfeeder to any port 8081 proto tcp
 sudo ufw reload
 ```
 
