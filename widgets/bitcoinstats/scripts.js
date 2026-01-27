@@ -137,15 +137,9 @@ async function main() {
         // Large
         //
         else if (size === view.BREAKPOINTS.large.name) {
-            const today = create.element('div', { className: 'today' });
-            const left = create.element('div', { className: 'left' });
-            const right = create.element('div', { className: 'right' });
-
-            left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin' }));
-            left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
-            left.appendChild(create.element('div', { className: 'desc-large', textContent: fees }));
-
-            const stats = [
+            const rows = [
+                ['Block height', blockheight],
+                ['Fees (min/med/max)', `${min_fees} / ${med_fees} / ${max_fees}`],
                 ['Mempool tx', txcount],
                 ['Mempool usage (MB)', (mempool_usage / 1000000).toFixed(2)],
                 ['Mempool max (MB)', (mempool_max / 1000000).toFixed(2)],
@@ -157,18 +151,18 @@ async function main() {
                 ['Bytes sent (MB)', bytessent.toFixed(2)],
             ];
 
-            for (const [label, value] of stats) {
-                const statItem = create.element('div', { className: 'stat-item' });
-                const statHeader = create.element('div', { className: 'stat-header' });
-                statHeader.appendChild(create.element('span', { className: 'stat-label', textContent: label }));
-                statItem.appendChild(statHeader);
-                statItem.appendChild(create.element('div', { className: 'stat-value', textContent: String(value) }));
-                right.appendChild(statItem);
+            const forecast = create.element('div', { className: 'forecast' });
+            for (const [label, value] of rows) {
+                const item = create.element('div', { className: 'forecast-item' });
+                const dayLabel = create.element('div', { className: 'day-label' });
+                dayLabel.appendChild(create.element('span', { className: 'day-name', textContent: label }));
+                const range = create.element('div', { className: 'temp-range' });
+                range.appendChild(create.element('span', { className: 'forecast-temp high', textContent: String(value) }));
+                item.appendChild(dayLabel);
+                item.appendChild(range);
+                forecast.appendChild(item);
             }
-
-            today.appendChild(left);
-            today.appendChild(right);
-            container.appendChild(today);
+            container.appendChild(forecast);
         }
 
         //
