@@ -56,13 +56,13 @@ async function getData({ net, url }) {
     const connections = netInfoRes?.connections ?? 0;
     const connections_out = netInfoRes?.connections_out ?? 0;
     const connections_in = netInfoRes?.connections_in ?? 0;
-    let version = '0';
+    let version = '0.0';
     if (netInfoRes?.version != null) {
-        const tmp_version = String(netInfoRes.version);
-        const major = tmp_version.substring(0, 2);
-        const minor = tmp_version.substring(3, 1);
-        const rc = tmp_version.substring(5, 1);
-        version = rc !== '0' && rc !== '' ? `${major}.${minor}-rc${rc}` : `${major}.${minor}`;
+        const raw = String(netInfoRes.version).padStart(6, '0');
+        const major = raw.slice(0, 2);
+        const minor = raw.slice(2, 4);
+        const rc = raw.slice(4, 6);
+        version = rc !== '00' ? `${major}.${minor}-rc${rc}` : `${major}.${minor}`;
     }
 
     const bytesrecv = totalsRes?.totalbytesrecv ? totalsRes.totalbytesrecv / 1000000 : 0;
@@ -137,6 +137,7 @@ async function main() {
         // Large
         //
         else if (size === view.BREAKPOINTS.large.name) {
+
             const today = create.element('div', { className: 'today' });
             const left = create.element('div', { className: 'left' });
             const right = create.element('div', { className: 'right' });
@@ -146,10 +147,11 @@ async function main() {
             left.appendChild(create.element('div', { className: 'desc-large', textContent: `Fees: ${fees}` }));
 
             const headlineStats = [
-                ['Mempool tx', txcount],
-                ['Mempool usage (MB)', (mempool_usage / 1000000).toFixed(2)],
-                ['Halving (blocks)', halving],
-                ['Connections', connections],
+                ['Bitcoin Core', version],
+                //['Mempool tx', txcount],
+                //['Mempool usage (MB)', (mempool_usage / 1000000).toFixed(2)],
+                //['Halving (blocks)', halving],
+                //['Connections', `${connections} / ${connections_in} (in) / ${connections_out} (out)`],
             ];
 
             for (const [label, value] of headlineStats) {
@@ -166,9 +168,9 @@ async function main() {
             container.appendChild(today);
 
             const rows = [
-                ['Mempool max (MB)', (mempool_max / 1000000).toFixed(2)],
-                ['Connections (in/out)', `${connections_in} / ${connections_out}`],
-                ['Node version', version],
+                ['Connections (sum / in / out)', `${connections} / ${connections_in} / ${connections_out}`],
+                ['Mempool Tx Count', txcount],
+                ['Mempool Usage / Max (MB)', `${(mempool_usage / 1000000).toFixed(2)} / ${(mempool_max / 1000000).toFixed(2)}`],
                 ['Bytes recv (MB)', bytesrecv.toFixed(2)],
                 ['Bytes sent (MB)', bytessent.toFixed(2)],
             ];
