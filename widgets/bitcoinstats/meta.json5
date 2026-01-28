@@ -9,12 +9,12 @@
     assets: {
         icon: 'static/icon.svg',
         previews: {
-            full: '',
-            large: '',
-            medium: '',
-            small_left: '',
-            small_right: '',
-        }, 
+            full: 'static/full.png',
+            large: 'static/large.png',
+            medium: 'static/medium.png',
+            small_left: 'static/small_left.png',
+            small_right: 'static/small_right.png',
+        },
     },
 
     prefs: ['theme'],
