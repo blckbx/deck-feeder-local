@@ -8,6 +8,13 @@
     description: 'Show local Bitcoin node stats served by BTC-RPC-Explorer API.',
     assets: {
         icon: 'static/icon.svg',
+        previews: {
+            full: '',
+            large: '',
+            medium: '',
+            small_left: '',
+            small_right: '',
+        }, 
     },
 
     prefs: ['theme'],
