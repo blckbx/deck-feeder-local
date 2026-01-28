@@ -129,6 +129,28 @@ async function main() {
         const mempoolMaxMb = mempool_max / 1000000;
         const mempoolPercent = mempool_max > 0 ? Math.min(100, (mempool_usage / mempool_max) * 100) : 0;
 
+        const buildForecast = (rows) => {
+            const forecast = create.element('div', { className: 'forecast' });
+            for (const [label, value, kind] of rows) {
+                const item = create.element('div', { className: `forecast-item${kind ? ` ${kind}` : ''}` });
+                const dayLabel = create.element('div', { className: 'day-label' });
+                dayLabel.appendChild(create.element('span', { className: 'day-name', textContent: label }));
+                const range = create.element('div', { className: 'temp-range' });
+                range.appendChild(create.element('span', { className: 'forecast-temp high', textContent: String(value) }));
+                if (kind === 'mempool-usage') {
+                    const bar = create.element('div', { className: 'usage-bar' });
+                    const fill = create.element('div', { className: 'usage-fill' });
+                    fill.style.width = `${mempoolPercent.toFixed(1)}%`;
+                    bar.appendChild(fill);
+                    range.appendChild(bar);
+                }
+                item.appendChild(dayLabel);
+                item.appendChild(range);
+                forecast.appendChild(item);
+            }
+            return forecast;
+        };
+
         //
         // Small
         //
@@ -187,25 +209,7 @@ async function main() {
                 ['Coin Supply', supplyUs],
             ];
 
-            const forecast = create.element('div', { className: 'forecast' });
-            for (const [label, value, kind] of rows) {
-                const item = create.element('div', { className: `forecast-item${kind ? ` ${kind}` : ''}` });
-                const dayLabel = create.element('div', { className: 'day-label' });
-                dayLabel.appendChild(create.element('span', { className: 'day-name', textContent: label }));
-                const range = create.element('div', { className: 'temp-range' });
-                range.appendChild(create.element('span', { className: 'forecast-temp high', textContent: String(value) }));
-                if (kind === 'mempool-usage') {
-                    const bar = create.element('div', { className: 'usage-bar' });
-                    const fill = create.element('div', { className: 'usage-fill' });
-                    fill.style.width = `${mempoolPercent.toFixed(1)}%`;
-                    bar.appendChild(fill);
-                    range.appendChild(bar);
-                }
-                item.appendChild(dayLabel);
-                item.appendChild(range);
-                forecast.appendChild(item);
-            }
-            container.appendChild(forecast);
+            container.appendChild(buildForecast(rows));
         }
 
         //
@@ -253,43 +257,22 @@ async function main() {
                 ['Coin Supply', supplyUs],
             ];
 
-            const forecast = create.element('div', { className: 'forecast' });
-            for (const [label, value, kind] of rows) {
-                const item = create.element('div', { className: `forecast-item${kind ? ` ${kind}` : ''}` });
-                const dayLabel = create.element('div', { className: 'day-label' });
-                dayLabel.appendChild(create.element('span', { className: 'day-name', textContent: label }));
-                const range = create.element('div', { className: 'temp-range' });
-                range.appendChild(create.element('span', { className: 'forecast-temp high', textContent: String(value) }));
-                if (kind === 'mempool-usage') {
-                    const bar = create.element('div', { className: 'usage-bar' });
-                    const fill = create.element('div', { className: 'usage-fill' });
-                    fill.style.width = `${mempoolPercent.toFixed(1)}%`;
-                    bar.appendChild(fill);
-                    range.appendChild(bar);
-                }
-                item.appendChild(dayLabel);
-                item.appendChild(range);
-                forecast.appendChild(item);
-            }
-            mainColumn.appendChild(forecast);
+            mainColumn.appendChild(buildForecast(rows));
 
-            const sideHeadline = create.element('div', { className: 'full-side-headline', textContent: 'Additional Info' });
-            const infoTable = create.element('table', { className: 'info-table' });
-            const infoHead = create.element('thead');
-            const infoHeadRow = create.element('tr');
-            infoHeadRow.appendChild(create.element('th', { textContent: 'Metric' }));
-            infoHeadRow.appendChild(create.element('th', { textContent: 'Value' }));
-            infoHead.appendChild(infoHeadRow);
-            const infoBody = create.element('tbody');
-            const placeholderRow = create.element('tr', { className: 'info-placeholder' });
-            placeholderRow.appendChild(create.element('td', { textContent: '—' }));
-            placeholderRow.appendChild(create.element('td', { textContent: '—' }));
-            infoBody.appendChild(placeholderRow);
-            infoTable.appendChild(infoHead);
-            infoTable.appendChild(infoBody);
+            const sideHeadline = create.element('div', { className: 'today' });
+            const sideStats = create.element('div', { className: 'right' });
+            for (const [label, value] of headlineStats) {
+                const statItem = create.element('div', { className: 'stat-item' });
+                const statHeader = create.element('div', { className: 'stat-header' });
+                statHeader.appendChild(create.element('span', { className: 'stat-label', textContent: label }));
+                statItem.appendChild(statHeader);
+                statItem.appendChild(create.element('div', { className: 'stat-value', textContent: String(value) }));
+                sideStats.appendChild(statItem);
+            }
+            sideHeadline.appendChild(sideStats);
 
             sideColumn.appendChild(sideHeadline);
-            sideColumn.appendChild(infoTable);
+            sideColumn.appendChild(buildForecast(rows));
 
             layout.appendChild(mainColumn);
             layout.appendChild(sideColumn);
