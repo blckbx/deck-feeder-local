@@ -20,7 +20,6 @@ async function fetchJson(net, url, timeoutMs = 5000) {
 
 async function getData({ net, url }) {
     const msg1 = `${url}/api/blocks/tip`;
-    const msg2 = `${url}/api/mempool/fees`;
     const msg3 = `${url}/api/mempool/summary`;
     const msg4 = `${url}/api/blockchain/next-halving`;
     const msg5 = `${url}/api/mining/next-block`;
@@ -30,7 +29,6 @@ async function getData({ net, url }) {
 
     const results = await Promise.allSettled([
         fetchJson(net, msg1),
-        fetchJson(net, msg2),
         fetchJson(net, msg3),
         fetchJson(net, msg4),
         fetchJson(net, msg5),
@@ -40,13 +38,12 @@ async function getData({ net, url }) {
     ]);
 
     const tipRes = results[0].status === 'fulfilled' ? results[0].value : null;
-    const feesRes = results[1].status === 'fulfilled' ? results[1].value : null;
-    const mempoolRes = results[2].status === 'fulfilled' ? results[2].value : null;
-    const halvingRes = results[3].status === 'fulfilled' ? results[3].value : null;
-    const nextBlockRes = results[4].status === 'fulfilled' ? results[4].value : null;
-    const coinsRes = results[5].status === 'fulfilled' ? results[5].value : null;
-    const netInfoRes = results[6].status === 'fulfilled' ? results[6].value : null;
-    const totalsRes = results[7].status === 'fulfilled' ? results[7].value : null;
+    const mempoolRes = results[1].status === 'fulfilled' ? results[1].value : null;
+    const halvingRes = results[2].status === 'fulfilled' ? results[2].value : null;
+    const nextBlockRes = results[3].status === 'fulfilled' ? results[3].value : null;
+    const coinsRes = results[4].status === 'fulfilled' ? results[4].value : null;
+    const netInfoRes = results[5].status === 'fulfilled' ? results[5].value : null;
+    const totalsRes = results[6].status === 'fulfilled' ? results[6].value : null;
 
     const blockheight = typeof tipRes?.height === 'number' ? tipRes.height : 0;
     const nextBlock = nextBlockRes || {};
@@ -119,8 +116,6 @@ async function main() {
             bytesrecv,
             bytessent,
         } = await getData({ net, url });
-
-    
         const container = select.id('container');
         const size = params.size;
         const theme = (params.theme || 'light').toLowerCase();
@@ -177,12 +172,15 @@ async function main() {
             headline.appendChild(right);
             container.appendChild(headline);
 
+            const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
+            const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
             const rows = [
                 ['Connections ( ∑ / ↓ / ↑ )', `${connections} / ${connections_in} / ${connections_out}`],
                 ['Mempool Tx Count', txcount],
                 ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
                 ['Bytes recv / sent (MB)', `${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)}`],
-                ['Coin Supply', `${supply.toFixed(2)}`],
+                ['Coin Supply', supplyUs],
             ];
 
             const forecast = create.element('div', { className: 'forecast' });
