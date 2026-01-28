@@ -354,32 +354,6 @@ async function main() {
 
             mainColumn.appendChild(buildForecast(rows));
 
-            const sideHeadline = create.element('div', { className: 'today' });
-            const sideStats = create.element('div', { className: 'right' });
-
-            sideStats.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Node' }));
-
-            const headlineStatsRight = [
-                ['Headline', 'Data'],
-                ['Headline', 'Data'],
-            ];
-
-            for (const [label, value] of headlineStatsRight) {
-                const statItem = create.element('div', { className: 'stat-item' });
-                const statHeader = create.element('div', { className: 'stat-header' });
-                statHeader.appendChild(create.element('span', { className: 'stat-label', textContent: label }));
-                statItem.appendChild(statHeader);
-                const statValue = create.element('div', { className: 'stat-value' });
-                if (value && typeof value === 'object' && value.nodeType) {
-                    statValue.appendChild(value);
-                } else {
-                    statValue.textContent = value == null ? '—' : String(value);
-                }
-                statItem.appendChild(statValue);
-                sideStats.appendChild(statItem);
-            }
-            sideHeadline.appendChild(sideStats);
-            sideColumn.appendChild(sideHeadline);
 
             const infoRows = [
                 ['Local Services', localServicesDisplay],
