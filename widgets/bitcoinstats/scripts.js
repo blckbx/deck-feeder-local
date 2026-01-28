@@ -20,17 +20,16 @@ async function fetchJson(net, url, timeoutMs = 5000) {
 
 
 async function getData({ net, url }) {
-    const msg1 = `${url}/api/blocks/tip`;
     const msg3 = `${url}/api/mempool/summary`;
     const msg4 = `${url}/api/blockchain/next-halving`;
     const msg5 = `${url}/api/mining/next-block`;
     const msg6 = `${url}/api/blockchain/coins`;
     const msg7 = `${url}/api/blockchain/utxo-set`;
-    const msg8 = `${url}/api/networkinfo`;
-    const msg9 = `${url}/api/getnettotals`;
+    const msg8 = `${url}/api/blockchaininfo`;
+    const msg9 = `${url}/api/networkinfo`;
+    const msg10 = `${url}/api/getnettotals`;
 
     const results = await Promise.allSettled([
-        fetchJson(net, msg1),
         fetchJson(net, msg3),
         fetchJson(net, msg4),
         fetchJson(net, msg5),
@@ -38,18 +37,21 @@ async function getData({ net, url }) {
         fetchJson(net, msg7),
         fetchJson(net, msg8),
         fetchJson(net, msg9),
+        fetchJson(net, msg10),
     ]);
 
-    const tipRes = results[0].status === 'fulfilled' ? results[0].value : null;
-    const mempoolRes = results[1].status === 'fulfilled' ? results[1].value : null;
-    const halvingRes = results[2].status === 'fulfilled' ? results[2].value : null;
-    const nextBlockRes = results[3].status === 'fulfilled' ? results[3].value : null;
-    const coinsRes = results[4].status === 'fulfilled' ? results[4].value : null;
-    const utxoRes = results[5].status === 'fulfilled' ? results[5].value : null;
+    const mempoolRes = results[0].status === 'fulfilled' ? results[0].value : null;
+    const halvingRes = results[1].status === 'fulfilled' ? results[1].value : null;
+    const nextBlockRes = results[2].status === 'fulfilled' ? results[2].value : null;
+    const coinsRes = results[3].status === 'fulfilled' ? results[3].value : null;
+    const utxoRes = results[4].status === 'fulfilled' ? results[4].value : null;
+    const blockchainInfoRes = results[5].status === 'fulfilled' ? results[5].value : null;
     const netInfoRes = results[6].status === 'fulfilled' ? results[6].value : null;
     const totalsRes = results[7].status === 'fulfilled' ? results[7].value : null;
 
-    const blockheight = typeof tipRes?.height === 'number' ? tipRes.height : 0;
+    const blockheight = Number.isFinite(Number(blockchainInfoRes?.blocks))
+        ? Number(blockchainInfoRes.blocks)
+        : 0;
     const nextBlock = nextBlockRes || {};
     const min_fees = Number.isFinite(Number(nextBlock.minFeeRate)) ? Number(nextBlock.minFeeRate) : 0;
     const med_fees = Number.isFinite(Number(nextBlock.medianFeeRate)) ? Number(nextBlock.medianFeeRate) : 0;
@@ -84,6 +86,13 @@ async function getData({ net, url }) {
     const chainstateDiskMb = Number.isFinite(Number(utxoRes?.disk_size))
         ? Number(utxoRes.disk_size) / 1000000
         : 0;
+    const blockchainDiskMb = Number.isFinite(Number(blockchainInfoRes?.size_on_disk))
+        ? Number(blockchainInfoRes.size_on_disk) / 1000000
+        : 0;
+    const isPruned = blockchainInfoRes?.pruned === true;
+    const blockchainBlocks = Number.isFinite(Number(blockchainInfoRes?.blocks))
+        ? Number(blockchainInfoRes.blocks)
+        : 0;
 
     return {
         blockheight,
@@ -105,6 +114,9 @@ async function getData({ net, url }) {
         bytessent,
         utxoTxouts,
         chainstateDiskMb,
+        blockchainDiskMb,
+        blockchainBlocks,
+        isPruned,
     };
 }
 
@@ -135,6 +147,9 @@ async function main() {
             bytessent,
             utxoTxouts,
             chainstateDiskMb,
+            blockchainDiskMb,
+            blockchainBlocks,
+            isPruned,
         } = await getData({ net, url });
         const container = select.id('container');
         const size = params.size;
@@ -267,10 +282,10 @@ async function main() {
             const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
             const rows = [
-                ['Connections ( ∑ / ↓ / ↑ )', `${connections} / ${connections_in} / ${connections_out}`],
+                ['Connections', `∑ ${connections} / ↓ ${connections_in} / ↑ ${connections_out}`],
                 ['Mempool Tx Count', txcount],
                 ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
-                ['Bytes recv / sent (MB)', `${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)}`],
+                ['Bytes recv / sent (MB)', `↓ ${bytesrecv.toFixed(0)} / ↑ ${bytessent.toFixed(0)}`],
                 ['Coin Supply', supplyUs],
             ];
 
@@ -328,7 +343,9 @@ async function main() {
                 ['Networks', networkBadges],
                 ['Services', localServicesDisplay],
                 ['UTXO Set', utxoTxouts.toLocaleString('en-US')],
-                ['Chainstate Disk Size (MB)', chainstateDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],                
+                ['Chainstate Disk Size (MB)', chainstateDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
+                ['Blockchain Disk Size (MB)', blockchainDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
+                ['Node Type', isPruned ? 'Pruned' : 'Full Archival'],
             ];
             sideColumn.appendChild(buildForecast(rightRows));
 
