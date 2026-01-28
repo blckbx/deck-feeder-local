@@ -17,7 +17,7 @@
         },
     },
 
-    prefs: ['theme', 'numberFormat', 'dateFormat', 'timeFormat', 'timezone'],
+    prefs: ['theme'],
     params: {
         url: {
             name: 'URL',
