@@ -723,7 +723,7 @@ body {
     gap: 0.35rem;
     padding: 0.2rem 0.5rem;
     border-radius: 999px;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     border: 1px solid var(--border-subtle);
     background: transparent;
 }
@@ -753,17 +753,9 @@ body {
 }
 
 .address-item {
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     color: var(--text-primary);
     word-break: break-all;
     text-align: right;
 }
 
-.qr-code {
-    width: 120px;
-    height: 120px;
-    border-radius: 12px;
-    padding: 6px;
-    background: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
