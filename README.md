@@ -9,13 +9,32 @@ Self-hosted widget server for remote widgets on your Deck.
 - Docker and Docker Compose
 - x86_64 Linux machine
 
-### 1. Start the services
+## Local Bitcoin Stats Widget Setup
+
+To run the Bitcoin stats widget locally you need:
+
+- A local Bitcoin node
+- `btc-rpc-explorer` connected to your node with the additional APIs enabled
+- `deck-feeder-local` running (this repo)
+- nginx reverse proxy (config below in this README)
+- UFW rules for the nginx port and Docker bridge (if UFW is enabled; rules below in this README)
+
+Repositories:
+
+```text
+btc-rpc-explorer (with extra APIs): https://github.com/blckbx/btc-rpc-explorer
+deck-feeder-local (this repo): https://github.com/blckbx/deck-feeder-local/tree/dev
+```
+
+### Run it
+
+From the `deck-feeder-local` repo:
 
 ```bash
 docker compose up -d
 ```
 
-### 2. Push widgets to the database
+Then load the widgets into the database (run from the parent directory of `deck-feeder-local`):
 
 ```bash
 docker compose exec api /usr/local/bin/push_templates \
@@ -29,23 +48,7 @@ docker compose exec api /usr/local/bin/push_templates \
   --device-prefs-file /sdk/v1/prefs.json5
 ```
 
-### 3. Verify it works
-
-```bash
-# list available widgets
-curl http://localhost:8080/
-
-# render a widget
-curl -X POST http://localhost:8080/weather/invoke \
-  -H 'Content-Type: application/json' \
-  -d '{"widget_version":"latest","size":"medium","params":{"location":"Prague"}}'
-```
-
-### 4. Connect your Deck
-
-Point your Deck to your server's IP address on port 8080.
-
-## Notes: Reverse Proxy + Docker Networking (Linux)
+### Setup Nginx
 
 If a widget needs to call a local service (e.g., btc-rpc-explorer) from inside the
 renderer, prefer a same-origin reverse proxy to avoid CORS and self-signed TLS
@@ -79,7 +82,25 @@ issues. One approach is to run nginx on a separate host port (e.g. 8081) and pro
         }
 ```
 
-Then set the widget URL to `http://<host-lan-ip>:8081/btc-rpc-explorer`.
+### Verify it works
+
+```bash
+# list available widgets
+curl http://localhost:8081/
+
+# render a widget
+curl -X POST http://localhost:8081/weather/invoke \
+  -H 'Content-Type: application/json' \
+  -d '{"widget_version":"latest","size":"medium","params":{"location":"Prague"}}'
+```
+
+### Connect your Deck
+
+Then set the widget URL to `http://<host-lan-ip>:8081/btc-rpc-explorer`
+
+
+
+### Notes: Docker Networking (Linux)
 
 On Linux with UFW enabled, traffic from the Docker bridge to the host can be
 blocked. You may need an explicit rule for the deck-feeder network bridge. 
@@ -90,12 +111,6 @@ sudo ufw allow in on br-deckfeeder to any port 8081 proto tcp
 sudo ufw reload
 ```
 
-Also ensure UFW forwarding is enabled:
-
-```bash
-# /etc/default/ufw
-DEFAULT_FORWARD_POLICY="ACCEPT"
-```
 
 ## Creating Widgets
 
