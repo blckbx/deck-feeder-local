@@ -320,12 +320,13 @@ async function main() {
             left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
             left.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`}));
 
-            const headlineStatsLeft = [
+            const headlineStats = [
                 ['Bitcoin Version', version],
                 ['Blocks Until Next Halving', halving],
+                ['Test1', 'Data1'],
             ];
 
-            for (const [label, value] of headlineStatsLeft) {
+            for (const [label, value] of headlineStats) {
                 const statItem = create.element('div', { className: 'stat-item' });
                 const statHeader = create.element('div', { className: 'stat-header' });
                 statHeader.appendChild(create.element('span', { className: 'stat-label', textContent: label }));
@@ -344,7 +345,7 @@ async function main() {
             const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
             const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-            const rows = [
+            const leftRows = [
                 ['Connections ( ∑ / ↓ / ↑ )', `${connections} / ${connections_in} / ${connections_out}`],
                 ['Mempool Tx Count', txcount],
                 ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
@@ -352,16 +353,16 @@ async function main() {
                 ['Coin Supply', supplyUs],
             ];
 
-            mainColumn.appendChild(buildForecast(rows));
+            mainColumn.appendChild(buildForecast(leftRows));
 
 
-            const infoRows = [
+            const rightRows = [
                 ['Local Services', localServicesDisplay],
                 ['Local Addresses', addressList],
                 ['Networks', networkBadges],
                 ['Connect QR', qrNode],                
             ];
-            sideColumn.appendChild(buildInfoTable(infoRows));
+            sideColumn.appendChild(buildInfoTable(rightRows));
 
             layout.appendChild(mainColumn);
             layout.appendChild(sideColumn);
