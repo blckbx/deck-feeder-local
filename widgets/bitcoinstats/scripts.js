@@ -202,7 +202,7 @@ async function main() {
                 if (address.length > 24) {
                     const midpoint = Math.ceil(address.length / 2);
                     item.appendChild(document.createTextNode(address.slice(0, midpoint)));
-                    item.appendChild(create.element('wbr'));
+                    item.appendChild(create.element('br'));
                     item.appendChild(document.createTextNode(address.slice(midpoint)));
                 } else {
                     item.textContent = address;
