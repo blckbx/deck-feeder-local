@@ -25,6 +25,7 @@ async function getData({ net, url }) {
     const msg4 = `${url}/api/blockchain/next-halving`;
     const msg5 = `${url}/api/mining/next-block`;
     const msg6 = `${url}/api/blockchain/coins`;
+    const msg7 = `${url}/api/blockchain/utxo-set`;
     const msg8 = `${url}/api/networkinfo`;
     const msg9 = `${url}/api/getnettotals`;
 
@@ -34,6 +35,7 @@ async function getData({ net, url }) {
         fetchJson(net, msg4),
         fetchJson(net, msg5),
         fetchJson(net, msg6),
+        fetchJson(net, msg7),
         fetchJson(net, msg8),
         fetchJson(net, msg9),
     ]);
@@ -43,8 +45,9 @@ async function getData({ net, url }) {
     const halvingRes = results[2].status === 'fulfilled' ? results[2].value : null;
     const nextBlockRes = results[3].status === 'fulfilled' ? results[3].value : null;
     const coinsRes = results[4].status === 'fulfilled' ? results[4].value : null;
-    const netInfoRes = results[5].status === 'fulfilled' ? results[5].value : null;
-    const totalsRes = results[6].status === 'fulfilled' ? results[6].value : null;
+    const utxoRes = results[5].status === 'fulfilled' ? results[5].value : null;
+    const netInfoRes = results[6].status === 'fulfilled' ? results[6].value : null;
+    const totalsRes = results[7].status === 'fulfilled' ? results[7].value : null;
 
     const blockheight = typeof tipRes?.height === 'number' ? tipRes.height : 0;
     const nextBlock = nextBlockRes || {};
@@ -78,6 +81,10 @@ async function getData({ net, url }) {
 
     const bytesrecv = totalsRes?.totalbytesrecv ? totalsRes.totalbytesrecv / 1000000 : 0;
     const bytessent = totalsRes?.totalbytessent ? totalsRes.totalbytessent / 1000000 : 0;
+    const utxoTxouts = Number.isFinite(Number(utxoRes?.txouts)) ? Number(utxoRes.txouts) : 0;
+    const chainstateDiskMb = Number.isFinite(Number(utxoRes?.disk_size))
+        ? Number(utxoRes.disk_size) / 1000000
+        : 0;
 
     return {
         blockheight,
@@ -98,6 +105,8 @@ async function getData({ net, url }) {
         version,
         bytesrecv,
         bytessent,
+        utxoTxouts,
+        chainstateDiskMb,
     };
 }
 
@@ -127,6 +136,8 @@ async function main() {
             version,
             bytesrecv,
             bytessent,
+            utxoTxouts,
+            chainstateDiskMb,
         } = await getData({ net, url });
         const container = select.id('container');
         const size = params.size;
@@ -349,6 +360,8 @@ async function main() {
                 ['Services', localServicesDisplay],
                 ['Addresses', addressList],
                 ['Networks', networkBadges],
+                ['UTXO Set', utxoTxouts.toLocaleString('en-US')],
+                ['Chainstate Disk Size (MB)', chainstateDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],                
             ];
             sideColumn.appendChild(buildForecast(rightRows));
 
