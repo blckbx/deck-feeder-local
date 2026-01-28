@@ -339,8 +339,8 @@ async function main() {
             headline.appendChild(right);
             container.appendChild(headline);
 
-            const divider = create.element('div', { className: 'full-divider' });
-            container.appendChild(divider);
+            //const divider = create.element('div', { className: 'full-divider' });
+            //container.appendChild(divider);
 
             const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
             const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
