@@ -323,7 +323,6 @@ async function main() {
             const headlineStats = [
                 ['Bitcoin Version', version],
                 ['Blocks Until Next Halving', halving],
-                ['Test1', 'Data1'],
             ];
 
             for (const [label, value] of headlineStats) {
