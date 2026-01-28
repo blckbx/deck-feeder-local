@@ -329,10 +329,10 @@ async function main() {
             const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
             const leftRows = [
-                ['Connections ( ∑ / ↓ / ↑ )', `${connections} / ${connections_in} / ${connections_out}`],
+                ['Connections', `∑ ${connections} / ↓ ${connections_in} / ↑ ${connections_out}`],
                 ['Mempool Tx Count', txcount],
                 ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
-                ['Bytes recv / sent (MB)', `${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)}`],
+                ['Bytes recv / sent (MB)', `↓ ${bytesrecv.toFixed(0)} / ↑ ${bytessent.toFixed(0)}`],
                 ['Coin Supply', supplyUs],
             ];
 
