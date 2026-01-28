@@ -643,3 +643,80 @@ body {
 .full-side {
     gap: 1rem;
 }
+
+.info-table {
+    background: color-mix(in srgb, var(--background) 85%, white);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 0.5rem;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.info-row:last-child {
+    border-bottom: 0;
+}
+
+.info-label {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    flex: 1;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.network-badges {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 0.35rem 0.5rem;
+    justify-content: flex-end;
+}
+
+.network-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    border: 1px solid transparent;
+}
+
+.network-badge.status-ok {
+    color: #0f5f2e;
+    background: rgba(28, 149, 76, 0.15);
+    border-color: rgba(28, 149, 76, 0.35);
+}
+
+.network-badge.status-no {
+    color: #7a1d1d;
+    background: rgba(196, 64, 64, 0.15);
+    border-color: rgba(196, 64, 64, 0.35);
+}
+
+.network-label {
+    font-weight: 600;
+}
+
+.network-status {
+    font-weight: 700;
+}

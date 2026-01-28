@@ -61,6 +61,11 @@ async function getData({ net, url }) {
     const connections = netInfoRes?.connections ?? 0;
     const connections_out = netInfoRes?.connections_out ?? 0;
     const connections_in = netInfoRes?.connections_in ?? 0;
+    const localservices = netInfoRes?.localservices ?? '';
+    const localservicesnames = Array.isArray(netInfoRes?.localservicesnames)
+        ? netInfoRes.localservicesnames
+        : [];
+    const networks = Array.isArray(netInfoRes?.networks) ? netInfoRes.networks : [];
     let version = '0.0';
     if (netInfoRes?.version != null) {
         const raw = String(netInfoRes.version).padStart(6, '0');
@@ -69,6 +74,8 @@ async function getData({ net, url }) {
         const rcNum = parseInt(raw.slice(4, 6), 10);
         version = rcNum ? `${major}.${minor}-rc${rcNum}` : `${major}.${minor}`;
     }
+
+    
 
     const bytesrecv = totalsRes?.totalbytesrecv ? totalsRes.totalbytesrecv / 1000000 : 0;
     const bytessent = totalsRes?.totalbytessent ? totalsRes.totalbytessent / 1000000 : 0;
@@ -86,6 +93,9 @@ async function getData({ net, url }) {
         connections,
         connections_out,
         connections_in,
+        localservices,
+        localservicesnames,
+        networks,
         version,
         bytesrecv,
         bytessent,
@@ -112,6 +122,9 @@ async function main() {
             connections,
             connections_out,
             connections_in,
+            localservices,
+            localservicesnames,
+            networks,
             version,
             bytesrecv,
             bytessent,
@@ -150,6 +163,65 @@ async function main() {
             }
             return forecast;
         };
+
+        const abbreviateServiceName = (name) => {
+            const map = {
+                NETWORK: 'NET',
+                BLOOM: 'BLM',
+                WITNESS: 'WIT',
+                COMPACT_FILTERS: 'CF',
+                NETWORK_LIMITED: 'NET-L',
+                P2P_V2: 'P2P2',
+            };
+            if (map[name]) {
+                return map[name];
+            }
+            return String(name).replace(/_/g, '').slice(0, 4).toUpperCase();
+        };
+
+        const buildInfoTable = (rows) => {
+            const table = create.element('div', { className: 'info-table' });
+            for (const [label, value] of rows) {
+                const row = create.element('div', { className: 'info-row' });
+                row.appendChild(create.element('div', { className: 'info-label', textContent: label }));
+                const valueCell = create.element('div', { className: 'info-value' });
+                if (value && typeof value === 'object' && value.nodeType) {
+                    valueCell.appendChild(value);
+                } else {
+                    valueCell.textContent = String(value);
+                }
+                row.appendChild(valueCell);
+                table.appendChild(row);
+            }
+            return table;
+        };
+
+        const localServicesAbbr = localservicesnames.map((name) => abbreviateServiceName(name));
+        const localServicesDisplay = localservices
+            ? `${localservices}${localServicesAbbr.length ? ` (${localServicesAbbr.join(', ')})` : ''}`
+            : localServicesAbbr.length
+                ? localServicesAbbr.join(', ')
+                : '—';
+
+        const networkOrder = [
+            ['ipv4', 'IPv4'],
+            ['ipv6', 'IPv6'],
+            ['onion', 'Tor'],
+            ['i2p', 'I2P'],
+            ['cjdns', 'CJDNS'],
+        ];
+        const networkMap = new Map(networks.map((network) => [network?.name, network]));
+        const networkBadges = create.element('div', { className: 'network-badges' });
+        for (const [key, label] of networkOrder) {
+            const netEntry = networkMap.get(key);
+            const reachable = netEntry?.reachable === true;
+            const badge = create.element('div', {
+                className: `network-badge ${reachable ? 'status-ok' : 'status-no'}`,
+            });
+            badge.appendChild(create.element('span', { className: 'network-label', textContent: label }));
+            badge.appendChild(create.element('span', { className: 'network-status', textContent: reachable ? 'OK' : 'NO' }));
+            networkBadges.appendChild(badge);
+        }
 
         //
         // Small
@@ -228,12 +300,12 @@ async function main() {
             left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
             left.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`}));
 
-            const headlineStats = [
+            const headlineStatsLeft = [
                 ['Bitcoin Version', version],
                 ['Next Halving', halving],
             ];
 
-            for (const [label, value] of headlineStats) {
+            for (const [label, value] of headlineStatsLeft) {
                 const statItem = create.element('div', { className: 'stat-item' });
                 const statHeader = create.element('div', { className: 'stat-header' });
                 statHeader.appendChild(create.element('span', { className: 'stat-label', textContent: label }));
@@ -250,17 +322,21 @@ async function main() {
             const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
             const rows = [
-                ['Connections ( ∑ / ↓ / ↑ )', `${connections} / ${connections_in} / ${connections_out}`],
+                ['Local Services', `${connections} / ${connections_in} / ${connections_out}`],
                 ['Mempool Tx Count', txcount],
-                ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
-                ['Bytes recv / sent (MB)', `${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)}`],
-                ['Coin Supply', supplyUs],
             ];
 
             mainColumn.appendChild(buildForecast(rows));
 
             const sideHeadline = create.element('div', { className: 'today' });
             const sideStats = create.element('div', { className: 'right' });
+
+            const headlineStatsRight = [
+                ['Bitcoin Version', version],
+                ['Next Halving', halving],
+            ];            
+
+            sideHeadline.appendChild(create.element('div', { className: 'location-header', textContent: '' }));
             for (const [label, value] of headlineStats) {
                 const statItem = create.element('div', { className: 'stat-item' });
                 const statHeader = create.element('div', { className: 'stat-header' });
@@ -272,6 +348,11 @@ async function main() {
             sideHeadline.appendChild(sideStats);
 
             sideColumn.appendChild(sideHeadline);
+            const infoRows = [
+                ['Local Services', localServicesDisplay],
+                ['Networks', networkBadges],
+            ];
+            sideColumn.appendChild(buildInfoTable(infoRows));
             sideColumn.appendChild(buildForecast(rows));
 
             layout.appendChild(mainColumn);
