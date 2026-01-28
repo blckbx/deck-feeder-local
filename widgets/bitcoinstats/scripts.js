@@ -355,7 +355,7 @@ async function main() {
             const sideStats = create.element('div', { className: 'right' });
 
             const headlineStatsRight = [
-                [qrNode],
+                ['QR', qrNode],
             ];            
 
             for (const [label, value] of headlineStatsRight) {
