@@ -312,7 +312,7 @@ async function main() {
             const mainColumn = create.element('div', { className: 'full-main' });
             const sideColumn = create.element('div', { className: 'full-side' });
 
-            const headline = create.element('div', { className: 'today' });
+            const headline = create.element('div', { className: 'today full-headline' });
             const left = create.element('div', { className: 'left' });
             const right = create.element('div', { className: 'right' });
 
@@ -336,7 +336,10 @@ async function main() {
 
             headline.appendChild(left);
             headline.appendChild(right);
-            mainColumn.appendChild(headline);
+            container.appendChild(headline);
+
+            const divider = create.element('div', { className: 'full-divider' });
+            container.appendChild(divider);
 
             const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
             const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
