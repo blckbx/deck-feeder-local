@@ -616,3 +616,125 @@ body {
     border: 2px solid var(--support-error);
     border-radius: 50%;
 }
+
+.full {
+    flex-flow: row nowrap;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 2.5rem;
+}
+
+.full-layout {
+    display: flex;
+    flex: 1;
+    gap: 2.5rem;
+    align-items: stretch;
+}
+
+.full-main {
+    flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.full-side {
+    width: 36%;
+    min-width: 18rem;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 1rem;
+}
+
+.full .today {
+    display: flex;
+    gap: 2.5rem;
+
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.5rem;
+}
+
+.full .left {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: start;
+    justify-content: start;
+    gap: 0.7rem;
+}
+
+.full .left .location-header {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.full .left .temp-large {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.full .left .desc {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    text-align: left;
+}
+
+.full .right {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem 1.5rem;
+    align-self: end;
+}
+
+.full .forecast {
+    background: color-mix(in srgb, var(--background) 85%, white);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.full-side-headline {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 16px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--background) 85%, white);
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.info-table th,
+.info-table td {
+    text-align: left;
+    padding: 0.75rem 1rem;
+}
+
+.info-table thead th {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.info-table tbody td {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.info-table tbody tr + tr td {
+    border-top: 1px solid var(--border-subtle);
+}
+
+.info-table .info-placeholder td {
+    color: var(--text-secondary);
+}

@@ -208,6 +208,88 @@ async function main() {
         // Full
         //
         else if (size === view.BREAKPOINTS.full.name) {
+            const layout = create.element('div', { className: 'full-layout' });
+            const mainColumn = create.element('div', { className: 'full-main' });
+            const sideColumn = create.element('div', { className: 'full-side' });
+
+            const headline = create.element('div', { className: 'today' });
+            const left = create.element('div', { className: 'left' });
+            const right = create.element('div', { className: 'right' });
+
+            left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Node' }));
+            left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
+            left.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`}));
+
+            const headlineStats = [
+                ['Bitcoin Version', version],
+                ['Next Halving', halving],
+            ];
+
+            for (const [label, value] of headlineStats) {
+                const statItem = create.element('div', { className: 'stat-item' });
+                const statHeader = create.element('div', { className: 'stat-header' });
+                statHeader.appendChild(create.element('span', { className: 'stat-label', textContent: label }));
+                statItem.appendChild(statHeader);
+                statItem.appendChild(create.element('div', { className: 'stat-value', textContent: String(value) }));
+                right.appendChild(statItem);
+            }
+
+            headline.appendChild(left);
+            headline.appendChild(right);
+            mainColumn.appendChild(headline);
+
+            const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
+            const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+            const rows = [
+                ['Connections ( ∑ / ↓ / ↑ )', `${connections} / ${connections_in} / ${connections_out}`],
+                ['Mempool Tx Count', txcount],
+                ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
+                ['Bytes recv / sent (MB)', `${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)}`],
+                ['Coin Supply', supplyUs],
+            ];
+
+            const forecast = create.element('div', { className: 'forecast' });
+            for (const [label, value, kind] of rows) {
+                const item = create.element('div', { className: `forecast-item${kind ? ` ${kind}` : ''}` });
+                const dayLabel = create.element('div', { className: 'day-label' });
+                dayLabel.appendChild(create.element('span', { className: 'day-name', textContent: label }));
+                const range = create.element('div', { className: 'temp-range' });
+                range.appendChild(create.element('span', { className: 'forecast-temp high', textContent: String(value) }));
+                if (kind === 'mempool-usage') {
+                    const bar = create.element('div', { className: 'usage-bar' });
+                    const fill = create.element('div', { className: 'usage-fill' });
+                    fill.style.width = `${mempoolPercent.toFixed(1)}%`;
+                    bar.appendChild(fill);
+                    range.appendChild(bar);
+                }
+                item.appendChild(dayLabel);
+                item.appendChild(range);
+                forecast.appendChild(item);
+            }
+            mainColumn.appendChild(forecast);
+
+            const sideHeadline = create.element('div', { className: 'full-side-headline', textContent: 'Additional Info' });
+            const infoTable = create.element('table', { className: 'info-table' });
+            const infoHead = create.element('thead');
+            const infoHeadRow = create.element('tr');
+            infoHeadRow.appendChild(create.element('th', { textContent: 'Metric' }));
+            infoHeadRow.appendChild(create.element('th', { textContent: 'Value' }));
+            infoHead.appendChild(infoHeadRow);
+            const infoBody = create.element('tbody');
+            const placeholderRow = create.element('tr', { className: 'info-placeholder' });
+            placeholderRow.appendChild(create.element('td', { textContent: '—' }));
+            placeholderRow.appendChild(create.element('td', { textContent: '—' }));
+            infoBody.appendChild(placeholderRow);
+            infoTable.appendChild(infoHead);
+            infoTable.appendChild(infoBody);
+
+            sideColumn.appendChild(sideHeadline);
+            sideColumn.appendChild(infoTable);
+
+            layout.appendChild(mainColumn);
+            layout.appendChild(sideColumn);
+            container.appendChild(layout);
         }
 
         //
