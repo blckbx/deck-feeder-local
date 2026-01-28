@@ -119,7 +119,11 @@ async function main() {
         const container = select.id('container');
         const size = params.size;
         const theme = (params.theme || 'light').toLowerCase();
-        container.className = `${size} ${theme}`;
+        const classNames = [size, theme];
+        if (size === view.BREAKPOINTS.full.name) {
+            classNames.push('large');
+        }
+        container.className = classNames.join(' ');
 
         const mempoolUsageMb = mempool_usage / 1000000;
         const mempoolMaxMb = mempool_max / 1000000;
