@@ -354,6 +354,8 @@ async function main() {
             const sideHeadline = create.element('div', { className: 'today' });
             const sideStats = create.element('div', { className: 'right' });
 
+            sideStats.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Node' }));
+
             const headlineStatsRight = [
                 ['Headline', 'Data'],
                 ['Headline', 'Data'],
@@ -374,8 +376,8 @@ async function main() {
                 sideStats.appendChild(statItem);
             }
             sideHeadline.appendChild(sideStats);
-
             sideColumn.appendChild(sideHeadline);
+
             const infoRows = [
                 ['Local Services', localServicesDisplay],
                 ['Local Addresses', addressList],
