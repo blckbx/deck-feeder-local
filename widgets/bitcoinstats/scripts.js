@@ -239,7 +239,7 @@ async function main() {
                 className: `network-badge ${reachable ? 'status-ok' : 'status-no'}`,
             });
             badge.appendChild(create.element('span', { className: 'network-label', textContent: label }));
-            badge.appendChild(create.element('span', { className: 'network-status', textContent: reachable ? 'OK' : 'NO' }));
+            badge.appendChild(create.element('span', { className: 'network-status', textContent: reachable ? '✓' : '✕' }));
             networkBadges.appendChild(badge);
         }
 
@@ -355,15 +355,22 @@ async function main() {
             const sideStats = create.element('div', { className: 'right' });
 
             const headlineStatsRight = [
-                ['QR', qrNode],
-            ];            
+                ['Headline', 'Data'],
+                ['Headline', 'Data'],
+            ];
 
             for (const [label, value] of headlineStatsRight) {
                 const statItem = create.element('div', { className: 'stat-item' });
                 const statHeader = create.element('div', { className: 'stat-header' });
                 statHeader.appendChild(create.element('span', { className: 'stat-label', textContent: label }));
                 statItem.appendChild(statHeader);
-                statItem.appendChild(create.element('div', { className: 'stat-value', textContent: String(value) }));
+                const statValue = create.element('div', { className: 'stat-value' });
+                if (value && typeof value === 'object' && value.nodeType) {
+                    statValue.appendChild(value);
+                } else {
+                    statValue.textContent = value == null ? '—' : String(value);
+                }
+                statItem.appendChild(statValue);
                 sideStats.appendChild(statItem);
             }
             sideHeadline.appendChild(sideStats);
@@ -373,6 +380,7 @@ async function main() {
                 ['Local Services', localServicesDisplay],
                 ['Local Addresses', addressList],
                 ['Networks', networkBadges],
+                ['Connect QR', qrNode],                
             ];
             sideColumn.appendChild(buildInfoTable(infoRows));
 

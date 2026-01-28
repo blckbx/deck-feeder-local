@@ -698,27 +698,25 @@ body {
     padding: 0.2rem 0.5rem;
     border-radius: 999px;
     font-size: 0.9rem;
-    border: 1px solid transparent;
-}
-
-.network-badge.status-ok {
-    color: #0f5f2e;
-    background: rgba(28, 149, 76, 0.15);
-    border-color: rgba(28, 149, 76, 0.35);
-}
-
-.network-badge.status-no {
-    color: #7a1d1d;
-    background: rgba(196, 64, 64, 0.15);
-    border-color: rgba(196, 64, 64, 0.35);
+    border: 1px solid var(--border-subtle);
+    background: transparent;
 }
 
 .network-label {
     font-weight: 600;
+    color: var(--text-primary);
 }
 
 .network-status {
     font-weight: 700;
+}
+
+.network-badge.status-ok .network-status {
+    color: #1c954c;
+}
+
+.network-badge.status-no .network-status {
+    color: #c44040;
 }
 
 .address-list {
