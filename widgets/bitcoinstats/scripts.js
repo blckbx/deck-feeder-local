@@ -24,6 +24,7 @@ async function getData({ net, url }) {
     const msg3 = `${url}/api/mempool/summary`;
     const msg4 = `${url}/api/blockchain/next-halving`;
     const msg5 = `${url}/api/mining/next-block`;
+    const msg6 = `${url}/api/blockchain/coins`;
     const msg8 = `${url}/api/networkinfo`;
     const msg9 = `${url}/api/getnettotals`;
 
@@ -33,6 +34,7 @@ async function getData({ net, url }) {
         fetchJson(net, msg3),
         fetchJson(net, msg4),
         fetchJson(net, msg5),
+        fetchJson(net, msg6),
         fetchJson(net, msg8),
         fetchJson(net, msg9),
     ]);
@@ -42,14 +44,17 @@ async function getData({ net, url }) {
     const mempoolRes = results[2].status === 'fulfilled' ? results[2].value : null;
     const halvingRes = results[3].status === 'fulfilled' ? results[3].value : null;
     const nextBlockRes = results[4].status === 'fulfilled' ? results[4].value : null;
-    const netInfoRes = results[5].status === 'fulfilled' ? results[5].value : null;
-    const totalsRes = results[6].status === 'fulfilled' ? results[6].value : null;
+    const coinsRes = results[5].status === 'fulfilled' ? results[5].value : null;
+    const netInfoRes = results[6].status === 'fulfilled' ? results[5].value : null;
+    const totalsRes = results[7].status === 'fulfilled' ? results[6].value : null;
 
     const blockheight = typeof tipRes?.height === 'number' ? tipRes.height : 0;
     const nextBlock = nextBlockRes || {};
     const min_fees = Number.isFinite(Number(nextBlock.minFeeRate)) ? Number(nextBlock.minFeeRate) : 0;
     const med_fees = Number.isFinite(Number(nextBlock.medianFeeRate)) ? Number(nextBlock.medianFeeRate) : 0;
     const max_fees = Number.isFinite(Number(nextBlock.maxFeeRate)) ? Number(nextBlock.maxFeeRate) : 0;
+
+    const supply = coinsRes.supply ?? 0;
 
     const mempool_max = mempoolRes?.maxmempool ?? mempoolRes?.maxMempool ?? mempoolRes?.maxMemPool ?? 0;
     const mempool_usage = mempoolRes?.usage ?? 0;
@@ -78,6 +83,7 @@ async function getData({ net, url }) {
         max_fees,
         mempool_max,
         mempool_usage,
+        supply,
         txcount,
         halving,
         connections,
@@ -103,6 +109,7 @@ async function main() {
             max_fees,
             mempool_max,
             mempool_usage,
+            supply,
             txcount,
             halving,
             connections,
@@ -171,10 +178,11 @@ async function main() {
             container.appendChild(headline);
 
             const rows = [
-                ['Connections (∑ / ↓ / ↑)', `${connections} / ${connections_in} / ${connections_out}`],
+                ['Connections ( ∑ / ↓ / ↑ )', `${connections} / ${connections_in} / ${connections_out}`],
                 ['Mempool Tx Count', txcount],
                 ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
                 ['Bytes recv / sent (MB)', `${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)}`],
+                ['Coins', `${supply}`],
             ];
 
             const forecast = create.element('div', { className: 'forecast' });

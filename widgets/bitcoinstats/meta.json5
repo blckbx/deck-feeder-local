@@ -1,7 +1,7 @@
 {
     $schema: '../../sdk/v1/schema.json',
 
-    ttl: 300,
+    ttl: 60,
     sizes: ['full', 'large', 'medium', 'small'],
 
     name: 'BitcoinStats',
@@ -23,7 +23,7 @@
             name: 'URL',
             description: 'Local address of BTC-RPC-Explorer API (http://ip:port)',
             type: 'string',
-            default: 'http://host.docker.internal:3002',
+            default: 'http://host.docker.internal:8081/btc-rpc-explorer/',
         },
     },
 }
