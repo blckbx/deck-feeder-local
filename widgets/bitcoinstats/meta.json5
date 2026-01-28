@@ -1,7 +1,7 @@
 {
     $schema: '../../sdk/v1/schema.json',
 
-    ttl: 120,
+    ttl: 30,
     sizes: ['full', 'large', 'medium', 'small'],
 
     name: 'BitcoinStats',

@@ -54,7 +54,7 @@ async function getData({ net, url }) {
     const med_fees = Number.isFinite(Number(nextBlock.medianFeeRate)) ? Number(nextBlock.medianFeeRate) : 0;
     const max_fees = Number.isFinite(Number(nextBlock.maxFeeRate)) ? Number(nextBlock.maxFeeRate) : 0;
 
-    const supply = coinsRes.supply ?? 0;
+    const supply = Number.isFinite(Number(coinsRes?.supply)) ? Number(coinsRes.supply) : 0;
 
     const mempool_max = mempoolRes?.maxmempool ?? mempoolRes?.maxMempool ?? mempoolRes?.maxMemPool ?? 0;
     const mempool_usage = mempoolRes?.usage ?? 0;
