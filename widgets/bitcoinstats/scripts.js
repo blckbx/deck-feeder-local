@@ -182,7 +182,7 @@ async function main() {
                 ['Mempool Tx Count', txcount],
                 ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
                 ['Bytes recv / sent (MB)', `${bytesrecv.toFixed(0)} / ${bytessent.toFixed(0)}`],
-                ['Coins', `${supply}`],
+                ['Coin Supply', `${supply.toFixed(2)}`],
             ];
 
             const forecast = create.element('div', { className: 'forecast' });
