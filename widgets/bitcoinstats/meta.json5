@@ -2,7 +2,7 @@
     $schema: '../../sdk/v1/schema.json',
 
     ttl: 30,
-    sizes: ['full', 'large', 'medium', 'small'],
+    sizes: ['full', 'large', 'small'],
 
     name: 'BitcoinStats',
     description: 'Show local Bitcoin node stats served by BTC-RPC-Explorer API.',
