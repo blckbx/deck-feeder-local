@@ -148,7 +148,13 @@ async function main() {
                 const dayLabel = create.element('div', { className: 'day-label' });
                 dayLabel.appendChild(create.element('span', { className: 'day-name', textContent: label }));
                 const range = create.element('div', { className: 'temp-range' });
-                range.appendChild(create.element('span', { className: 'forecast-temp high', textContent: String(value) }));
+                const valueNode = create.element('div', { className: 'forecast-temp high' });
+                if (value && typeof value === 'object' && value.nodeType) {
+                    valueNode.appendChild(value);
+                } else {
+                    valueNode.textContent = String(value);
+                }
+                range.appendChild(valueNode);
                 if (kind === 'mempool-usage') {
                     const bar = create.element('div', { className: 'usage-bar' });
                     const fill = create.element('div', { className: 'usage-fill' });
@@ -176,23 +182,6 @@ async function main() {
                 return map[name];
             }
             return String(name).replace(/_/g, '').slice(0, 4).toUpperCase();
-        };
-
-        const buildInfoTable = (rows) => {
-            const table = create.element('div', { className: 'info-table' });
-            for (const [label, value] of rows) {
-                const row = create.element('div', { className: 'info-row' });
-                row.appendChild(create.element('div', { className: 'info-label', textContent: label }));
-                const valueCell = create.element('div', { className: 'info-value' });
-                if (value && typeof value === 'object' && value.nodeType) {
-                    valueCell.appendChild(value);
-                } else {
-                    valueCell.textContent = String(value);
-                }
-                row.appendChild(valueCell);
-                table.appendChild(row);
-            }
-            return table;
         };
 
         const localServicesAbbr = localservicesnames.map((name) => abbreviateServiceName(name));
