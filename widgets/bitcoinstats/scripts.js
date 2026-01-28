@@ -69,7 +69,6 @@ async function getData({ net, url }) {
         ? netInfoRes.localservicesnames
         : [];
     const networks = Array.isArray(netInfoRes?.networks) ? netInfoRes.networks : [];
-    const localaddresses = Array.isArray(netInfoRes?.localaddresses) ? netInfoRes.localaddresses : [];
     let version = '0.0';
     if (netInfoRes?.version != null) {
         const raw = String(netInfoRes.version).padStart(6, '0');
@@ -101,7 +100,6 @@ async function getData({ net, url }) {
         connections_in,
         localservicesnames,
         networks,
-        localaddresses,
         version,
         bytesrecv,
         bytessent,
@@ -132,7 +130,6 @@ async function main() {
             connections_in,
             localservicesnames,
             networks,
-            localaddresses,
             version,
             bytesrecv,
             bytessent,
@@ -198,31 +195,6 @@ async function main() {
         const localServicesAbbr = localservicesnames.map((name) => abbreviateServiceName(name));
         const localServicesDisplay = localServicesAbbr.length ? localServicesAbbr.join(', ') : '—';
 
-        const addressList = create.element('div', { className: 'address-list' });
-        const addresses = localaddresses
-            .map((entry) => {
-                if (!entry?.address) {
-                    return null;
-                }
-                return entry.port ? `${entry.address}:${entry.port}` : String(entry.address);
-            })
-            .filter(Boolean);
-        if (addresses.length) {
-            for (const address of addresses) {
-                const item = create.element('div', { className: 'address-item' });
-                if (address.length > 24) {
-                    const midpoint = Math.ceil(address.length / 2);
-                    item.appendChild(document.createTextNode(address.slice(0, midpoint)));
-                    item.appendChild(create.element('br'));
-                    item.appendChild(document.createTextNode(address.slice(midpoint)));
-                } else {
-                    item.textContent = address;
-                }
-                addressList.appendChild(item);
-            }
-        } else {
-            addressList.appendChild(create.element('div', { className: 'address-item', textContent: '—' }));
-        }
 
         const networkOrder = [
             ['ipv4', 'IPv4'],
@@ -319,7 +291,6 @@ async function main() {
 
             left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Node' }));
             left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
-            //left.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`}));
 
             const headlineStats = [
                 ['Next Block Fees', `${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`],
@@ -339,9 +310,6 @@ async function main() {
             headline.appendChild(right);
             container.appendChild(headline);
 
-            //const divider = create.element('div', { className: 'full-divider' });
-            //container.appendChild(divider);
-
             const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
             const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
@@ -357,9 +325,8 @@ async function main() {
 
 
             const rightRows = [
-                ['Services', localServicesDisplay],
-                ['Addresses', addressList],
                 ['Networks', networkBadges],
+                ['Services', localServicesDisplay],
                 ['UTXO Set', utxoTxouts.toLocaleString('en-US')],
                 ['Chainstate Disk Size (MB)', chainstateDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],                
             ];

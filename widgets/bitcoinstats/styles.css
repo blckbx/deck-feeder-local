@@ -656,13 +656,6 @@ body {
     align-items: flex-end;
 }
 
-.full-divider {
-    width: 100%;
-    height: 1px;
-    background: var(--border-subtle);
-    margin: 1rem 0 0;
-}
-
 .full-main,
 .full-side {
     flex: 1 1 0;
@@ -673,46 +666,6 @@ body {
 
 .full-side {
     gap: 1rem;
-}
-
-.info-table {
-    background: color-mix(in srgb, var(--background) 85%, white);
-    border: 1px solid var(--border-subtle);
-    border-radius: 16px;
-    padding: 0.75rem 1rem;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-flow: column nowrap;
-    gap: 0.5rem;
-}
-
-.info-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.35rem 0;
-    border-bottom: 1px solid var(--border-subtle);
-}
-
-.info-row:last-child {
-    border-bottom: 0;
-}
-
-.info-label {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    flex: 1;
-}
-
-.info-value {
-    font-size: 1.1rem;
-    color: var(--text-primary);
-    text-align: right;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    flex-wrap: wrap;
 }
 
 .network-badges {
@@ -748,18 +701,4 @@ body {
 
 .network-badge.status-no .network-status {
     color: #c44040;
-}
-
-.address-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    align-items: flex-end;
-}
-
-.address-item {
-    font-size: 1.1rem;
-    color: var(--text-primary);
-    word-break: break-all;
-    text-align: right;
 }
