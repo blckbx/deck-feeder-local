@@ -239,7 +239,7 @@ async function main() {
                 className: `network-badge ${reachable ? 'status-ok' : 'status-no'}`,
             });
             badge.appendChild(create.element('span', { className: 'network-label', textContent: label }));
-            badge.appendChild(create.element('span', { className: 'network-status', textContent: reachable ? '✓' : '✕' }));
+            badge.appendChild(create.element('span', { className: 'network-status', textContent: reachable ? '✓' : 'x' }));
             networkBadges.appendChild(badge);
         }
 
