@@ -1,11 +1,11 @@
 {
     $schema: '../../sdk/v1/schema.json',
 
-    ttl: 60,
+    ttl: 120,
     sizes: ['full', 'large', 'medium', 'small'],
 
     name: 'BitcoinStats',
-    description: 'Show local Bitcoin stats from BTC-RPC-Explorer API.',
+    description: 'Show local Bitcoin node stats served ny BTC-RPC-Explorer API.',
     assets: {
         icon: 'static/icon.svg',
         previews: {
