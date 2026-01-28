@@ -639,6 +639,13 @@ body {
     margin-bottom: 0;
 }
 
+.full-headline .right {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 2rem;
+    align-self: center;
+}
+
 .full-divider {
     width: 100%;
     height: 1px;
