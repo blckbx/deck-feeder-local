@@ -308,12 +308,11 @@ async function main() {
 
             left.appendChild(create.element('div', { className: 'location-header', textContent: 'Bitcoin Node' }));
             left.appendChild(create.element('div', { className: 'temp-large', textContent: blockheight }));
-            left.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`}));
+            //left.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`}));
 
             const headlineStats = [
-                ['Fees', `${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`],
+                ['Next Block Fees', `${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`],
                 ['Bitcoin Version', version],
-                ['Blocks Until Next Halving', halving],
             ];
 
             for (const [label, value] of headlineStats) {
