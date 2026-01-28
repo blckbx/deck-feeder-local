@@ -45,8 +45,8 @@ async function getData({ net, url }) {
     const halvingRes = results[3].status === 'fulfilled' ? results[3].value : null;
     const nextBlockRes = results[4].status === 'fulfilled' ? results[4].value : null;
     const coinsRes = results[5].status === 'fulfilled' ? results[5].value : null;
-    const netInfoRes = results[6].status === 'fulfilled' ? results[5].value : null;
-    const totalsRes = results[7].status === 'fulfilled' ? results[6].value : null;
+    const netInfoRes = results[6].status === 'fulfilled' ? results[6].value : null;
+    const totalsRes = results[7].status === 'fulfilled' ? results[7].value : null;
 
     const blockheight = typeof tipRes?.height === 'number' ? tipRes.height : 0;
     const nextBlock = nextBlockRes || {};
