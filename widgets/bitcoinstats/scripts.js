@@ -375,7 +375,6 @@ async function main() {
                 ['Networks', networkBadges],
             ];
             sideColumn.appendChild(buildInfoTable(infoRows));
-            sideColumn.appendChild(buildForecast(rows));
 
             layout.appendChild(mainColumn);
             layout.appendChild(sideColumn);
