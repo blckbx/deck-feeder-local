@@ -352,7 +352,7 @@ async function main() {
                 ['Addresses', addressList],
                 ['Networks', networkBadges],
             ];
-            sideColumn.appendChild(buildInfoTable(rightRows));
+            sideColumn.appendChild(buildForecast(rightRows));
 
             layout.appendChild(mainColumn);
             layout.appendChild(sideColumn);
