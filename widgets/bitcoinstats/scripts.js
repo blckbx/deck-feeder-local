@@ -345,7 +345,7 @@ async function main() {
                 ['UTXO Set', utxoTxouts.toLocaleString('en-US')],
                 ['Chainstate Disk Size (MB)', chainstateDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
                 ['Blockchain Disk Size (MB)', blockchainDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
-                ['Node Type', isPruned ? 'Pruned' : 'Full Archival'],
+                ['Node Type', isPruned ? 'Pruned' : 'Archival'],
             ];
             sideColumn.appendChild(buildForecast(rightRows));
 
