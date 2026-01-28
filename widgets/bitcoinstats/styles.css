@@ -655,13 +655,13 @@ body {
     width: 100%;
     height: 1px;
     background: var(--border-subtle);
-    margin: 1.5rem 0 0;
+    margin: 1rem 0 0;
 }
 
 .full-main,
 .full-side {
     flex: 1 1 0;
-    width: 50%;
+    width: 80%;
     display: flex;
     flex-flow: column nowrap;
 }
