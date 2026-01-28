@@ -76,8 +76,6 @@ async function getData({ net, url }) {
         version = rcNum ? `${major}.${minor}-rc${rcNum}` : `${major}.${minor}`;
     }
 
-    
-
     const bytesrecv = totalsRes?.totalbytesrecv ? totalsRes.totalbytesrecv / 1000000 : 0;
     const bytessent = totalsRes?.totalbytessent ? totalsRes.totalbytessent / 1000000 : 0;
 
@@ -217,12 +215,6 @@ async function main() {
             addressList.appendChild(create.element('div', { className: 'address-item', textContent: '—' }));
         }
 
-        const qrTarget = addresses[0] || '';
-        const qrNode = qrTarget ? createQrSvg(qrTarget, 120) : create.element('div', { textContent: '—' });
-        if (qrTarget) {
-            qrNode.setAttribute('class', 'qr-code');
-        }
-
         const networkOrder = [
             ['ipv4', 'IPv4'],
             ['ipv6', 'IPv6'],
@@ -356,10 +348,9 @@ async function main() {
 
 
             const rightRows = [
-                ['Local Services', localServicesDisplay],
-                ['Local Addresses', addressList],
+                ['Services', localServicesDisplay],
+                ['Addresses', addressList],
                 ['Networks', networkBadges],
-                ['Connect QR', qrNode],                
             ];
             sideColumn.appendChild(buildInfoTable(rightRows));
 
