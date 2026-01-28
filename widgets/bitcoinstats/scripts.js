@@ -198,7 +198,16 @@ async function main() {
             .filter(Boolean);
         if (addresses.length) {
             for (const address of addresses) {
-                addressList.appendChild(create.element('div', { className: 'address-item', textContent: address }));
+                const item = create.element('div', { className: 'address-item' });
+                if (address.length > 24) {
+                    const midpoint = Math.ceil(address.length / 2);
+                    item.appendChild(document.createTextNode(address.slice(0, midpoint)));
+                    item.appendChild(create.element('wbr'));
+                    item.appendChild(document.createTextNode(address.slice(midpoint)));
+                } else {
+                    item.textContent = address;
+                }
+                addressList.appendChild(item);
             }
         } else {
             addressList.appendChild(create.element('div', { className: 'address-item', textContent: '—' }));
@@ -302,6 +311,7 @@ async function main() {
             left.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`}));
 
             const headlineStats = [
+                ['Fees', `${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`],
                 ['Bitcoin Version', version],
                 ['Blocks Until Next Halving', halving],
             ];
