@@ -11,7 +11,9 @@
         previews: {
             full: 'static/full.png',
             large: 'static/large.png',
-            small: 'static/small.png',
+            medium: 'static/small.png',
+            small_left: 'static/small.png',
+            small_right: 'static/small.png',            
         },
     },
 
