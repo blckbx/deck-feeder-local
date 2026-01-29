@@ -343,8 +343,8 @@ async function main() {
                 ['Networks', networkBadges],
                 ['Services', localServicesDisplay],
                 ['UTXO Set', utxoTxouts.toLocaleString('en-US')],
-                ['Chainstate Disk Size (GB)', chainstateDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
-                ['Blockchain Disk Size (GB)', blockchainDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
+                ['Chainstate Disk Size (MB)', chainstateDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
+                ['Blockchain Disk Size (MB)', blockchainDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
                 ['Node Type', isPruned ? 'Pruned' : 'Archival'],
             ];
             sideColumn.appendChild(buildForecast(rightRows));
