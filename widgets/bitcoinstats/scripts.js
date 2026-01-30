@@ -335,7 +335,7 @@ async function main() {
                 ['Mempool Tx Count', txcount],
                 ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
                 ['Bytes recv / sent (MB)', `↓ ${bytesrecv.toFixed(0)} / ↑ ${bytessent.toFixed(0)}`],
-                ['Coin Supply', supplyUs],
+                ['Coin Supply', `${supplyUs} (${supplyPercent.toFixed(2)}%)`],
             ];
 
             mainColumn.appendChild(buildForecast(leftRows));
