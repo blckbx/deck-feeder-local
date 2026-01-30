@@ -280,13 +280,15 @@ async function main() {
 
             const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
             const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            const maxSupply = 21000000;
+            const supplyPercent = maxSupply > 0 ? (supply / maxSupply) * 100 : 0;
 
             const rows = [
                 ['Connections', `∑ ${connections} / ↓ ${connections_in} / ↑ ${connections_out}`],
                 ['Mempool Tx Count', txcount],
                 ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
                 ['Bytes recv / sent (MB)', `↓ ${bytesrecv.toFixed(0)} / ↑ ${bytessent.toFixed(0)}`],
-                ['Coin Supply', supplyUs],
+                ['Coin Supply', `${supplyUs} (${supplyPercent.toFixed(2)}%)`],
             ];
 
             container.appendChild(buildForecast(rows));
