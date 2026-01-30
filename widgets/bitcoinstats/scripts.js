@@ -164,6 +164,11 @@ async function main() {
         const mempoolMaxMb = mempool_max / 1000000;
         const mempoolPercent = mempool_max > 0 ? Math.min(100, (mempool_usage / mempool_max) * 100) : 0;
 
+        const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
+        const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        const maxSupply = 21000000;
+        const supplyPercent = maxSupply > 0 ? (supply / maxSupply) * 100 : 0;
+
         const buildForecast = (rows) => {
             const forecast = create.element('div', { className: 'forecast' });
             for (const [label, value, kind] of rows) {
@@ -277,11 +282,6 @@ async function main() {
             headline.appendChild(left);
             headline.appendChild(right);
             container.appendChild(headline);
-
-            const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
-            const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            const maxSupply = 21000000;
-            const supplyPercent = maxSupply > 0 ? (supply / maxSupply) * 100 : 0;
 
             const rows = [
                 ['Connections', `∑ ${connections} / ↓ ${connections_in} / ↑ ${connections_out}`],
