@@ -93,6 +93,7 @@ body {
         flex: 1;
         display: flex;
         flex-flow: column nowrap;
+        gap: 0.5rem;
 
         .location {
             font-size: 1.5rem;
@@ -106,7 +107,8 @@ body {
         .desc {
             font-size: 1.5rem;
             color: var(--text-secondary);
-            text-align: center;
+            text-align: left;
+            margin-bottom: 1.2rem;
         }
     }
 
