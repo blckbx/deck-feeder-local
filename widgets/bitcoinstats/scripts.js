@@ -4,6 +4,13 @@ function normalizeBaseUrl(url) {
     return url.endsWith('/') ? url.slice(0, -1) : url;
 }
 
+const MB_DIVISOR = 1000000;
+
+function safeNumber(value, fallback = 0) {
+    const num = Number(value);
+    return Number.isFinite(num) ? num : fallback;
+}
+
 async function fetchJson(net, url, timeoutMs = 5000) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -18,46 +25,45 @@ async function fetchJson(net, url, timeoutMs = 5000) {
     }
 }
 
-
 async function getData({ net, url }) {
-    const msg3 = `${url}/api/mempool/summary`;
-    const msg4 = `${url}/api/blockchain/next-halving`;
-    const msg5 = `${url}/api/mining/next-block`;
-    const msg6 = `${url}/api/blockchain/coins`;
-    const msg7 = `${url}/api/blockchain/utxo-set`;
-    const msg8 = `${url}/api/blockchaininfo`;
-    const msg9 = `${url}/api/networkinfo`;
-    const msg10 = `${url}/api/getnettotals`;
+    const endpoints = {
+        mempool: `${url}/api/mempool/summary`,
+        halving: `${url}/api/blockchain/next-halving`,
+        nextBlock: `${url}/api/mining/next-block`,
+        coins: `${url}/api/blockchain/coins`,
+        utxo: `${url}/api/blockchain/utxo-set`,
+        blockchainInfo: `${url}/api/blockchaininfo`,
+        netInfo: `${url}/api/networkinfo`,
+        totals: `${url}/api/getnettotals`,
+    };
 
-    const results = await Promise.allSettled([
-        fetchJson(net, msg3),
-        fetchJson(net, msg4),
-        fetchJson(net, msg5),
-        fetchJson(net, msg6),
-        fetchJson(net, msg7),
-        fetchJson(net, msg8),
-        fetchJson(net, msg9),
-        fetchJson(net, msg10),
-    ]);
+    const keys = Object.keys(endpoints);
+    const results = await Promise.allSettled(
+        keys.map((key) => fetchJson(net, endpoints[key]))
+    );
+    const responses = Object.fromEntries(
+        results.map((result, index) => [
+            keys[index],
+            result.status === 'fulfilled' ? result.value : null,
+        ])
+    );
 
-    const mempoolRes = results[0].status === 'fulfilled' ? results[0].value : null;
-    const halvingRes = results[1].status === 'fulfilled' ? results[1].value : null;
-    const nextBlockRes = results[2].status === 'fulfilled' ? results[2].value : null;
-    const coinsRes = results[3].status === 'fulfilled' ? results[3].value : null;
-    const utxoRes = results[4].status === 'fulfilled' ? results[4].value : null;
-    const blockchainInfoRes = results[5].status === 'fulfilled' ? results[5].value : null;
-    const netInfoRes = results[6].status === 'fulfilled' ? results[6].value : null;
-    const totalsRes = results[7].status === 'fulfilled' ? results[7].value : null;
+    const mempoolRes = responses.mempool;
+    const halvingRes = responses.halving;
+    const nextBlockRes = responses.nextBlock;
+    const coinsRes = responses.coins;
+    const utxoRes = responses.utxo;
+    const blockchainInfoRes = responses.blockchainInfo;
+    const netInfoRes = responses.netInfo;
+    const totalsRes = responses.totals;
 
-    const blockheight = Number.isFinite(Number(blockchainInfoRes?.blocks))
-        ? Number(blockchainInfoRes.blocks)
-        : 0;
+    const blockheight = safeNumber(blockchainInfoRes?.blocks);
     const nextBlock = nextBlockRes || {};
-    const min_fees = Number.isFinite(Number(nextBlock.minFeeRate)) ? Number(nextBlock.minFeeRate) : 0;
-    const med_fees = Number.isFinite(Number(nextBlock.medianFeeRate)) ? Number(nextBlock.medianFeeRate) : 0;
-    const max_fees = Number.isFinite(Number(nextBlock.maxFeeRate)) ? Number(nextBlock.maxFeeRate) : 0;
+    const min_fees = safeNumber(nextBlock.minFeeRate);
+    const med_fees = safeNumber(nextBlock.medianFeeRate);
+    const max_fees = safeNumber(nextBlock.maxFeeRate);
 
-    const supply = Number.isFinite(Number(coinsRes?.supply)) ? Number(coinsRes.supply) : 0;
+    const supply = safeNumber(coinsRes?.supply);
 
     const mempool_max = mempoolRes?.maxmempool ?? mempoolRes?.maxMempool ?? mempoolRes?.maxMemPool ?? 0;
     const mempool_usage = mempoolRes?.usage ?? 0;
@@ -80,20 +86,12 @@ async function getData({ net, url }) {
         version = rcNum ? `${major}.${minor}-rc${rcNum}` : `${major}.${minor}`;
     }
 
-    const bytesrecv = totalsRes?.totalbytesrecv ? totalsRes.totalbytesrecv / 1000000 : 0;
-    const bytessent = totalsRes?.totalbytessent ? totalsRes.totalbytessent / 1000000 : 0;
-    const utxoTxouts = Number.isFinite(Number(utxoRes?.txouts)) ? Number(utxoRes.txouts) : 0;
-    const chainstateDiskMb = Number.isFinite(Number(utxoRes?.disk_size))
-        ? Number(utxoRes.disk_size) / 1000000
-        : 0;
-    const blockchainDiskMb = Number.isFinite(Number(blockchainInfoRes?.size_on_disk))
-        ? Number(blockchainInfoRes.size_on_disk) / 1000000
-        : 0;
+    const bytesrecv = totalsRes?.totalbytesrecv ? totalsRes.totalbytesrecv / MB_DIVISOR : 0;
+    const bytessent = totalsRes?.totalbytessent ? totalsRes.totalbytessent / MB_DIVISOR : 0;
+    const utxoTxouts = safeNumber(utxoRes?.txouts);
+    const chainstateDiskMb = safeNumber(utxoRes?.disk_size) / MB_DIVISOR;
+    const blockchainDiskMb = safeNumber(blockchainInfoRes?.size_on_disk) / MB_DIVISOR;
     const isPruned = blockchainInfoRes?.pruned === true;
-    const blockchainBlocks = Number.isFinite(Number(blockchainInfoRes?.blocks))
-        ? Number(blockchainInfoRes.blocks)
-        : 0;
-
     return {
         blockheight,
         min_fees,
@@ -115,7 +113,6 @@ async function getData({ net, url }) {
         utxoTxouts,
         chainstateDiskMb,
         blockchainDiskMb,
-        blockchainBlocks,
         isPruned,
     };
 }
@@ -148,7 +145,6 @@ async function main() {
             utxoTxouts,
             chainstateDiskMb,
             blockchainDiskMb,
-            blockchainBlocks,
             isPruned,
         } = await getData({ net, url });
         const container = select.id('container');
@@ -160,8 +156,8 @@ async function main() {
         }
         container.className = classNames.join(' ');
 
-        const mempoolUsageMb = mempool_usage / 1000000;
-        const mempoolMaxMb = mempool_max / 1000000;
+        const mempoolUsageMb = mempool_usage / MB_DIVISOR;
+        const mempoolMaxMb = mempool_max / MB_DIVISOR;
         const mempoolPercent = mempool_max > 0 ? Math.min(100, (mempool_usage / mempool_max) * 100) : 0;
 
         const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
@@ -215,7 +211,6 @@ async function main() {
         const localServicesAbbr = localservicesnames.map((name) => abbreviateServiceName(name));
         const localServicesDisplay = localServicesAbbr.length ? localServicesAbbr.join(', ') : '—';
 
-
         const networkOrder = [
             ['ipv4', 'IPv4'],
             ['ipv6', 'IPv6'],
@@ -243,7 +238,7 @@ async function main() {
             container.appendChild(create.element('div', { className: 'temp', textContent: blockheight }));
             container.appendChild(create.element('div', { className: 'desc', textContent: `Fees: ${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB` }));
             container.appendChild(create.element('div', { className: 'desc', textContent: `Mempool: ${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)} MB` }));
-            container.appendChild(create.element('div', { className: 'desc', textContent: `Traffic: ↓ ${bytesrecv.toFixed(0)} | ↑ ${bytessent.toFixed(0)} MB` }));            
+            container.appendChild(create.element('div', { className: 'desc', textContent: `Traffic: ↓ ${bytesrecv.toFixed(0)} | ↑ ${bytessent.toFixed(0)} MB` }));
         }
 
         //
@@ -256,7 +251,6 @@ async function main() {
         // Large
         //
         else if (size === view.BREAKPOINTS.large.name) {
-
             const headline = create.element('div', { className: 'today' });
             const left = create.element('div', { className: 'left' });
             const right = create.element('div', { className: 'right' });
@@ -327,9 +321,6 @@ async function main() {
             headline.appendChild(right);
             container.appendChild(headline);
 
-            const supplyFixed = Number.isFinite(supply) ? supply.toFixed(2) : '0.00';
-            const supplyUs = supplyFixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
             const leftRows = [
                 ['Connections', `∑ ${connections} / ↓ ${connections_in} / ↑ ${connections_out}`],
                 ['Mempool Tx Count', txcount],
@@ -339,7 +330,6 @@ async function main() {
             ];
 
             mainColumn.appendChild(buildForecast(leftRows));
-
 
             const rightRows = [
                 ['Networks', networkBadges],
