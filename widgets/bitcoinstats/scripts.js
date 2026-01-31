@@ -122,7 +122,7 @@ async function main() {
 
     try {
         // Template URL for btc-rpc-explorer API
-        const rawUrl = params.getAny('url', 'http://lan-ip:8081/bitcoinstats');
+        const rawUrl = params.getAny('url', 'http://lan-ip:8081/bitcoinstats/');
         const url = normalizeBaseUrl(rawUrl);
         const {
             blockheight,
@@ -245,6 +245,29 @@ async function main() {
         // Medium
         //
         else if (size === view.BREAKPOINTS.medium.name) {
+            const left = create.element('div', { className: 'left' });
+            const rightWrapper = create.element('div', { className: 'right-wrapper' });
+            const right = create.element('div', { className: 'right' });
+
+            left.appendChild(create.element('div', { className: 'temp', textContent: blockheight }));
+            left.appendChild(create.element('div', { className: 'desc', textContent: `Bitcoin Version: ${version}` }));
+
+            const rightItems = [
+                ['Fees', `${min_fees.toFixed(2)} / ${med_fees.toFixed(2)} / ${max_fees.toFixed(0)} s/vB`],
+                ['Mempool', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)} MB`],
+                ['Traffic', `↓ ${bytesrecv.toFixed(0)} | ↑ ${bytessent.toFixed(0)} MB`],
+            ];
+
+            for (const [label, value] of rightItems) {
+                const item = create.element('div', { className: 'hour-item' });
+                item.appendChild(create.element('div', { className: 'hour-time', textContent: label }));
+                item.appendChild(create.element('div', { className: 'hour-temp', textContent: value }));
+                right.appendChild(item);
+            }
+
+            rightWrapper.appendChild(right);
+            container.appendChild(left);
+            container.appendChild(rightWrapper);
         }
 
         //
