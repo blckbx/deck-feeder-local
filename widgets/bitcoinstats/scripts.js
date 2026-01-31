@@ -259,10 +259,12 @@ async function main() {
             ];
 
             for (const [label, value] of rightItems) {
-                const item = create.element('div', { className: 'hour-item' });
-                item.appendChild(create.element('div', { className: 'hour-time', textContent: label }));
-                item.appendChild(create.element('div', { className: 'hour-temp', textContent: value }));
-                right.appendChild(item);
+                right.appendChild(
+                    create.element('div', {
+                        className: 'desc',
+                        textContent: `${label}: ${value}`,
+                    })
+                );
             }
 
             rightWrapper.appendChild(right);
