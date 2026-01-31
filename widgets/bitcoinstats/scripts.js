@@ -247,7 +247,6 @@ async function main() {
         else if (size === view.BREAKPOINTS.medium.name) {
             const left = create.element('div', { className: 'left' });
             const rightWrapper = create.element('div', { className: 'right-wrapper' });
-            const right = create.element('div', { className: 'right' });
 
             left.appendChild(create.element('div', { className: 'temp', textContent: blockheight }));
             left.appendChild(create.element('div', { className: 'desc', textContent: `Bitcoin Version: ${version}` }));
@@ -259,15 +258,13 @@ async function main() {
             ];
 
             for (const [label, value] of rightItems) {
-                right.appendChild(
+                rightWrapper.appendChild(
                     create.element('div', {
                         className: 'desc',
                         textContent: `${label}: ${value}`,
                     })
                 );
             }
-
-            rightWrapper.appendChild(right);
             container.appendChild(left);
             container.appendChild(rightWrapper);
         }
