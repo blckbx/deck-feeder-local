@@ -72,7 +72,7 @@ issues. One approach is to run nginx on a separate host port (e.g. 8081) and pro
             }
 
             # btc-rpc-explorer
-            location /btc-rpc-explorer/ {
+            location /bitcoinstats/ {
                 proxy_pass http://127.0.0.1:3002/;
                 proxy_http_version 1.1;
                 proxy_set_header Host $host;
@@ -96,7 +96,7 @@ curl -X POST http://localhost:8081/weather/invoke \
 
 ### Connect your Deck
 
-Then set the widget URL to `http://<host-lan-ip>:8081/btc-rpc-explorer`
+Then set the widget URL to `http://<host-lan-ip>:8081/bitcoinstats`
 
 
 

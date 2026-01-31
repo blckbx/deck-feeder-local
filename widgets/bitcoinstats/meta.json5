@@ -21,9 +21,9 @@
     params: {
         url: {
             name: 'URL',
-            description: 'Local address of BTC-RPC-Explorer API (http://ip:port)',
+            description: 'Local address of BTC-RPC-Explorer API (http://lan-ip:port/endpoint/)',
             type: 'string',
-            default: 'http://host.docker.internal:8081/btc-rpc-explorer/',
+            default: 'http://lan-ip:8081/bitcoinstats/',
         },
     },
 }

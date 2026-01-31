@@ -122,7 +122,7 @@ async function main() {
 
     try {
         // Template URL for btc-rpc-explorer API
-        const rawUrl = params.getAny('url', 'http://host.docker.internal:3002');
+        const rawUrl = params.getAny('url', 'http://lan-ip:8081/bitcoinstats');
         const url = normalizeBaseUrl(rawUrl);
         const {
             blockheight,
