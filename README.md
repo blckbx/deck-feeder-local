@@ -50,12 +50,12 @@ docker compose exec api /usr/local/bin/push_templates \
 
 ### Setup Nginx
 
-If a widget needs to call a local service (e.g., btc-rpc-explorer) from inside the
+If a widget needs to call a local service (e.g., btc-rpc-explorer on localhost:3002) from inside the
 renderer, prefer a same-origin reverse proxy to avoid CORS and self-signed TLS
 issues. One approach is to run nginx on a separate host port (e.g. 8081) and proxy:
 
 - `/` -> `http://127.0.0.1:8080/` (deck-feeder)
-- `/btc-rpc-explorer/` -> `http://127.0.0.1:3002/` (local service)
+- `/bitcoinstats/` -> `http://127.0.0.1:3002/` (local service)
 
 ```nginx
         server {
@@ -96,7 +96,7 @@ curl -X POST http://localhost:8081/weather/invoke \
 
 ### Connect your Deck
 
-Then set the widget URL to `http://<host-lan-ip>:8081/bitcoinstats`
+Then set the widget URL to `http://<host-lan-ip>:8081/bitcoinstats/`
 
 
 
