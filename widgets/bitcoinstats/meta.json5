@@ -21,9 +21,9 @@
     params: {
         url: {
             name: 'URL',
-            description: 'Local address of BTC-RPC-Explorer API (http://lan-ip:8081/bitcoinstats/)',
+            description: 'Local address of BTC-RPC-Explorer API (http://lan-ip:8081/btc-rpc-explorer/)',
             type: 'string',
-            default: 'http://lan-ip:8081/bitcoinstats/',
+            default: 'http://lan-ip:8081/btc-rpc-explorer/',
         },
     },
 }
