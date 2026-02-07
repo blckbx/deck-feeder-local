@@ -304,8 +304,10 @@ async function main() {
                 ['Mempool Tx Count', txcount],
                 ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
                 ['Bytes recv / sent (MB)', `↓ ${bytesrecv.toFixed(0)} / ↑ ${bytessent.toFixed(0)}`],
-                ['Coin Supply', `${supplyUs} (${supplyPercent.toFixed(2)}%)`],
             ];
+            if (supply > 0) {
+                rows.push(['Coin Supply', `${supplyUs} (${supplyPercent.toFixed(2)}%)`]);
+            }
 
             container.appendChild(buildForecast(rows));
         }
@@ -348,19 +350,23 @@ async function main() {
                 ['Mempool Tx Count', txcount],
                 ['Mempool Usage / Max (MB)', `${mempoolUsageMb.toFixed(0)} / ${mempoolMaxMb.toFixed(0)}`, 'mempool-usage'],
                 ['Bytes recv / sent (MB)', `↓ ${bytesrecv.toFixed(0)} / ↑ ${bytessent.toFixed(0)}`],
-                ['Coin Supply', `${supplyUs} (${supplyPercent.toFixed(2)}%)`],
             ];
+            if (supply > 0) {
+                leftRows.push(['Coin Supply', `${supplyUs} (${supplyPercent.toFixed(2)}%)`]);
+            }
 
             mainColumn.appendChild(buildForecast(leftRows));
 
             const rightRows = [
                 ['Networks', networkBadges],
                 ['Services', localServicesDisplay],
-                ['UTXO Set', utxoTxouts.toLocaleString('en-US')],
                 ['Chainstate Disk Size (MB)', chainstateDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
                 ['Blockchain Disk Size (MB)', blockchainDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
                 ['Node Type', isPruned ? 'Pruned' : 'Archival'],
             ];
+            if (utxoTxouts > 0) {
+                rightRows.splice(2, 0, ['UTXO Set', utxoTxouts.toLocaleString('en-US')]);
+            }
             sideColumn.appendChild(buildForecast(rightRows));
 
             layout.appendChild(mainColumn);
