@@ -63,7 +63,7 @@ async function getData({ net, url }) {
     const med_fees = safeNumber(nextBlock.medianFeeRate);
     const max_fees = safeNumber(nextBlock.maxFeeRate);
 
-    const supply = safeNumber(coinsRes?.supply);
+    const supply = coinsRes?.supply != null ? safeNumber(coinsRes.supply) : 0;
 
     const mempool_max = mempoolRes?.maxmempool ?? mempoolRes?.maxMempool ?? mempoolRes?.maxMemPool ?? 0;
     const mempool_usage = mempoolRes?.usage ?? 0;
@@ -88,7 +88,7 @@ async function getData({ net, url }) {
 
     const bytesrecv = totalsRes?.totalbytesrecv ? totalsRes.totalbytesrecv / MB_DIVISOR : 0;
     const bytessent = totalsRes?.totalbytessent ? totalsRes.totalbytessent / MB_DIVISOR : 0;
-    const utxoTxouts = safeNumber(utxoRes?.txouts);
+    const utxoTxouts = utxoRes?.txouts != null ? safeNumber(utxoRes.txouts) : 0;
     const chainstateDiskMb = safeNumber(utxoRes?.disk_size) / MB_DIVISOR;
     const blockchainDiskMb = safeNumber(blockchainInfoRes?.size_on_disk) / MB_DIVISOR;
     const isPruned = blockchainInfoRes?.pruned === true;
