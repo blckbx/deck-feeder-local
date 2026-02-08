@@ -1,7 +1,7 @@
 /// <reference path="../../sdk/v1/scripts.js" />
 
 // Open-Meteo API key (leave empty for free tier)
-const OPEN_METEO_API_KEY = '';
+const OPEN_METEO_API_KEY = 'nRD6HL1l0sJWTOMa';
 
 // Forecast configuration constants
 const FORECAST_CONFIG = {
