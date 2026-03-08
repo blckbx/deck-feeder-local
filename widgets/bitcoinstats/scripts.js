@@ -89,7 +89,6 @@ async function getData({ net, url }) {
     const bytesrecv = totalsRes?.totalbytesrecv ? totalsRes.totalbytesrecv / MB_DIVISOR : 0;
     const bytessent = totalsRes?.totalbytessent ? totalsRes.totalbytessent / MB_DIVISOR : 0;
     const utxoTxouts = utxoRes?.txouts != null ? safeNumber(utxoRes.txouts) : 0;
-    const chainstateDiskMb = safeNumber(utxoRes?.disk_size) / MB_DIVISOR;
     const blockchainDiskMb = safeNumber(blockchainInfoRes?.size_on_disk) / MB_DIVISOR;
     const isPruned = blockchainInfoRes?.pruned === true;
     return {
@@ -111,7 +110,6 @@ async function getData({ net, url }) {
         bytesrecv,
         bytessent,
         utxoTxouts,
-        chainstateDiskMb,
         blockchainDiskMb,
         isPruned,
     };
@@ -143,7 +141,6 @@ async function main() {
             bytesrecv,
             bytessent,
             utxoTxouts,
-            chainstateDiskMb,
             blockchainDiskMb,
             isPruned,
         } = await getData({ net, url });
@@ -360,7 +357,6 @@ async function main() {
             const rightRows = [
                 ['Networks', networkBadges],
                 ['Services', localServicesDisplay],
-                ['Chainstate Disk Size (MB)', chainstateDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
                 ['Blockchain Disk Size (MB)', blockchainDiskMb.toLocaleString('en-US', { maximumFractionDigits: 0 })],
                 ['Node Type', isPruned ? 'Pruned' : 'Archival'],
             ];
